@@ -14,7 +14,7 @@ export default function Profile() {
     setData(res.data)
     infoForm.setFieldsValue(res.data.user || {})
   })
-  useEffect(load, [])
+  useEffect(() => { load() }, [])
 
   if (!data) return <PageContainer><Card loading /></PageContainer>
 

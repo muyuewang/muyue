@@ -14,7 +14,7 @@ export default function ToolMail() {
   const { message } = App.useApp()
 
   const load = () => getMailConfig().then((res) => setConfig(res.data))
-  useEffect(load, [])
+  useEffect(() => { load() }, [])
 
   return (
     <PageContainer>

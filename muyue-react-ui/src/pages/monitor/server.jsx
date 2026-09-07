@@ -21,7 +21,7 @@ export default function MonitorServer() {
   const [server, setServer] = useState(null)
 
   const load = () => getServerInfo().then((res) => setServer(res.data))
-  useEffect(load, [])
+  useEffect(() => { load() }, [])
 
   if (!server) return <PageContainer><Card loading /></PageContainer>
 
