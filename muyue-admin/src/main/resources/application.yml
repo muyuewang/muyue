@@ -57,12 +57,16 @@ muyue:
     # 排除鉴权的静态资源（Spring Security 6 使用 PathPattern，** 只能出现在末尾）
     excludes: /favicon.ico,/webjars/**,/static/**,/css/**,/js/**,/img/**,/assets/**,/*.html,/*.ico
   jwt:
-    # 密钥（生产环境务必修改）
-    secret: muyueScaffoldSecretKeyForJwtTokenSignMustBeLongEnough2026
+    # 签名密钥：生产环境通过环境变量覆盖（MUYUE_JWT_SECRET），使用默认值时启动会输出告警
+    secret: ${MUYUE_JWT_SECRET:muyueScaffoldSecretKeyForJwtTokenSignMustBeLongEnough2026}
     # 令牌有效期（分钟），默认 12 小时
     expire-time: 720
     # 令牌请求头
     header: Authorization
+  cors:
+    # 允许的跨域来源："*" 仅限开发环境；生产改为具体域名，逗号分隔
+    # 例：allowed-origins: https://admin.example.com,https://www.example.com
+    allowed-origins: "*"
   captcha:
     enabled: true
     type: math
