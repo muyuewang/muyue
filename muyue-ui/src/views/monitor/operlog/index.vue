@@ -162,8 +162,8 @@ function getList() {
   loading.value = true
   listOperlog(addDateRange(queryParams, dateRange.value))
     .then((res) => {
-      logList.value = res.data.rows || []
-      total.value = res.data.total || 0
+      logList.value = res.rows || []
+      total.value = res.total || 0
     })
     .finally(() => {
       loading.value = false

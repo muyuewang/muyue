@@ -232,8 +232,8 @@ function getList() {
   loading.value = true
   listUser(queryParams)
     .then((res) => {
-      userList.value = res.data.rows || []
-      total.value = res.data.total || 0
+      userList.value = res.rows || []
+      total.value = res.total || 0
     })
     .finally(() => {
       loading.value = false
