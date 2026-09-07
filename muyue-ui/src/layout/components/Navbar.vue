@@ -77,13 +77,13 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import { UserFilled } from '@element-plus/icons-vue'
 import useAppStore from '@/store/modules/app'
 import useUserStore from '@/store/modules/user'
-import { listNotice, getUnreadCount } from '@/api/system/notice'
+import useNoticeStore from '@/store/modules/notice'
 
 const route = useRoute()
 const router = useRouter()
@@ -92,17 +92,11 @@ const userStore = useUserStore()
 
 const isFullscreen = ref(false)
 const isDark = ref(localStorage.getItem('muyue_theme') === 'dark')
-const noticeCount = ref(0)
-const recentNotices = ref([])
+const noticeStore = useNoticeStore()
+const noticeCount = computed(() => noticeStore.unreadCount)
+const recentNotices = computed(() => noticeStore.recentNotices)
 
-function loadNotices() {
-  listNotice({ pageNum: 1, pageSize: 5 }).then((res) => {
-    recentNotices.value = res.rows || []
-  }).catch(() => {})
-  getUnreadCount().then((res) => {
-    noticeCount.value = res.data || 0
-  }).catch(() => {})
-}
+let noticeTimer = null
 
 function handleNoticeClick(command) {
   router.push('/notice')
@@ -171,11 +165,17 @@ function handleCommand(command) {
 
 onMounted(() => {
   applyTheme()
-  loadNotices()
+  noticeStore.refresh()
+  // 轮询新公告（大厂做法是 WebSocket 推送，单体内嵌库场景用轻量轮询足够）
+  noticeTimer = setInterval(() => noticeStore.fetchUnread(), 60000)
 })
 
-// 路由变化时刷新未读数（从通知公告页读完返回后角标即时更新）
+onUnmounted(() => {
+  if (noticeTimer) clearInterval(noticeTimer)
+})
+
+// 路由切换时刷新（兜底，正常情况下读详情后通知页会主动触发刷新）
 watch(() => route.path, () => {
-  loadNotices()
+  noticeStore.refresh()
 })
 </script>

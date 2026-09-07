@@ -117,6 +117,9 @@ import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus, Delete, Edit, View } from '@element-plus/icons-vue'
 import { listNotice, getNotice, addNotice, updateNotice, delNotice } from '@/api/system/notice'
+import useNoticeStore from '@/store/modules/notice'
+
+const noticeStore = useNoticeStore()
 
 const loading = ref(false)
 const noticeList = ref([])
@@ -176,8 +179,9 @@ function handleView(row) {
   getNotice(row.noticeId).then((res) => {
     viewNotice.value = res.data
     viewOpen.value = true
-    // 后端已标记已读，刷新列表状态
+    // 后端已标记已读：立即刷新角标与列表状态
     getList()
+    noticeStore.refresh()
   })
 }
 function cancel() {
@@ -191,6 +195,7 @@ function submitForm() {
       ElMessage.success(form.noticeId ? '修改成功' : '发布成功')
       open.value = false
       getList()
+      noticeStore.refresh()
     })
   })
 }
@@ -201,6 +206,7 @@ function handleDelete(row) {
   }).then(() => delNotice(ids.join(','))).then(() => {
     ElMessage.success('删除成功')
     getList()
+    noticeStore.refresh()
   })
 }
 
