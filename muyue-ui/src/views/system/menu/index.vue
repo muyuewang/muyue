@@ -44,6 +44,14 @@
           <el-tag :type="row.status === '0' ? 'success' : 'danger'">{{ row.status === '0' ? '正常' : '停用' }}</el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="缓存" width="90" align="center">
+        <template #default="{ row }">
+          <el-tag v-if="row.menuType === 'C'" :type="row.isCache === '0' ? 'primary' : 'info'">
+            {{ row.isCache === '0' ? '缓存' : '不缓存' }}
+          </el-tag>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" prop="createTime" width="170" />
       <el-table-column label="操作" width="170" align="center" fixed="right" class-name="op-column">
         <template #default="{ row, $index }">
@@ -128,6 +136,17 @@
                 <el-radio value="0">正常</el-radio>
                 <el-radio value="1">停用</el-radio>
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col v-if="form.menuType === 'C'" :span="24">
+            <el-form-item label="是否缓存">
+              <el-radio-group v-model="form.isCache">
+                <el-radio value="0">缓存</el-radio>
+                <el-radio value="1">不缓存</el-radio>
+              </el-radio-group>
+              <div style="font-size: 12px; color: var(--text-secondary, #909399); line-height: 1.5">
+                开启后（keep-alive）切换页签保留查询条件与分页位置；页面组件名需与路由名一致
+              </div>
             </el-form-item>
           </el-col>
         </el-row>

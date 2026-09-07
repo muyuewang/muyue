@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
   PageContainer, ModalForm, ProFormText, ProFormRadio,
-  ProFormTreeSelect, ProFormSelect, ProFormDigit
+  ProFormTreeSelect, ProFormSelect, ProFormDigit, ProFormDependency
 } from '@ant-design/pro-components'
 import { App, Popconfirm, Space, Table, Tag } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -93,6 +93,13 @@ export default function SystemMenu() {
       render: (v) => <Tag color={v === '0' ? 'success' : 'default'}>{v === '0' ? '正常' : '停用'}</Tag>
     },
     {
+      title: '缓存', dataIndex: 'isCache', width: 90, align: 'center',
+      render: (v, row) =>
+        row.menuType === 'C'
+          ? <Tag color={v === '0' ? 'blue' : 'default'}>{v === '0' ? '缓存' : '不缓存'}</Tag>
+          : '-'
+    },
+    {
       title: '操作', width: 180,
       render: (_, row) => (
         <Space>
@@ -163,6 +170,17 @@ export default function SystemMenu() {
           name="status" label="状态"
           options={[{ label: '正常', value: '0' }, { label: '停用', value: '1' }]}
         />
+        <ProFormDependency name={['menuType']}>
+          {({ menuType }) =>
+            menuType === 'C' && (
+              <ProFormRadio.Group
+                name="isCache" label="是否缓存"
+                tooltip="开启后（keep-alive）切换页签保留查询条件与分页位置；页面组件名需与路由名一致"
+                options={[{ label: '缓存', value: '0' }, { label: '不缓存', value: '1' }]}
+              />
+            )
+          }
+        </ProFormDependency>
       </ModalForm>
     </PageContainer>
   )
