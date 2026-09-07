@@ -285,6 +285,13 @@ html.dark .sidebar-container .el-menu-item.is-active {
   white-space: nowrap;
 }
 
+/* 表格单元格全局单行：超长内容省略号截断，配合列级 show-overflow-tooltip 悬浮查看 */
+.el-table .el-table__cell > .cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* =========================================================
    顶栏
    ========================================================= */

@@ -49,9 +49,9 @@
         </template>
       </el-table-column>
       <el-table-column label="请求方式" prop="requestMethod" width="90" align="center" />
-      <el-table-column label="操作人员" prop="operName" width="110" />
+      <el-table-column label="操作人员" prop="operName" width="110" show-overflow-tooltip />
       <el-table-column label="部门" prop="deptName" width="120" show-overflow-tooltip />
-      <el-table-column label="操作地址" prop="operIp" width="130" />
+      <el-table-column label="操作地址" prop="operIp" width="130" show-overflow-tooltip />
       <el-table-column label="操作状态" width="90" align="center">
         <template #default="{ row }">
           <el-tag :type="row.status === 0 ? 'success' : 'danger'">{{ row.status === 0 ? '正常' : '异常' }}</el-tag>
