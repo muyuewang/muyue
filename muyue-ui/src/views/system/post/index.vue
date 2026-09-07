@@ -31,8 +31,8 @@
     <el-table :data="postList" v-loading="loading" border @selection-change="handleSelectionChange" class="page-container">
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="岗位编号" prop="postId" width="100" align="center" />
-      <el-table-column label="岗位编码" prop="postCode" show-overflow-tooltip />
-      <el-table-column label="岗位名称" prop="postName" show-overflow-tooltip />
+      <el-table-column label="岗位编码" prop="postCode" min-width="110" show-overflow-tooltip />
+      <el-table-column label="岗位名称" prop="postName" min-width="120" show-overflow-tooltip />
       <el-table-column label="显示顺序" prop="postSort" width="100" align="center" />
       <el-table-column label="状态" prop="status" width="90" align="center">
         <template #default="{ row }">

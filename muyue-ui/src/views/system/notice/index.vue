@@ -28,7 +28,7 @@
     <el-table :data="noticeList" v-loading="loading" border @selection-change="handleSelectionChange" class="page-container">
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="公告编号" prop="noticeId" width="100" align="center" />
-      <el-table-column label="公告标题" show-overflow-tooltip>
+      <el-table-column label="公告标题" min-width="160" show-overflow-tooltip>
         <template #default="{ row }">
           <el-link type="primary" @click="handleView(row)">{{ row.noticeTitle }}</el-link>
         </template>

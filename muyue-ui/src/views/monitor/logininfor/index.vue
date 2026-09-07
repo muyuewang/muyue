@@ -38,7 +38,7 @@
           <el-tag :type="row.status === '0' ? 'success' : 'danger'">{{ row.status === '0' ? '成功' : '失败' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="描述" prop="msg" show-overflow-tooltip />
+      <el-table-column label="描述" prop="msg" min-width="150" show-overflow-tooltip />
       <el-table-column label="访问时间" prop="accessTime" width="180" show-overflow-tooltip />
       <el-table-column label="操作" width="110" align="center" fixed="right" class-name="op-column">
         <template #default="{ row }">

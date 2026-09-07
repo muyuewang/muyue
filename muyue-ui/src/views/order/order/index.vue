@@ -56,7 +56,7 @@
       </el-table-column>
       <el-table-column label="收货人" prop="receiver" width="100" />
       <el-table-column label="联系电话" prop="phone" width="130" />
-      <el-table-column label="收货地址" prop="address" show-overflow-tooltip />
+      <el-table-column label="收货地址" prop="address" min-width="150" show-overflow-tooltip />
       <el-table-column label="下单时间" prop="createTime" width="180" />
       <el-table-column label="操作" width="170" align="center" fixed="right" class-name="op-column">
         <template #default="{ row, $index }">
