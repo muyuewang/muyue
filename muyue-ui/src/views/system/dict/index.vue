@@ -34,7 +34,7 @@
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="remark" min-width="100" show-overflow-tooltip />
-        <el-table-column label="操作" width="170" align="center" class-name="op-column">
+        <el-table-column label="操作" width="170" align="center" fixed="right" class-name="op-column">
           <template #default="{ row, $index }">
             <el-button link type="primary" :icon="Edit" v-hasPermi="['system:dict:edit']" @click.stop="handleTypeUpdate(row)">修改</el-button>
             <el-divider direction="vertical" />
@@ -88,7 +88,7 @@
             <el-tag :type="row.status === '0' ? 'success' : 'danger'">{{ row.status === '0' ? '正常' : '停用' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150" align="center" class-name="op-column">
+        <el-table-column label="操作" width="150" align="center" fixed="right" class-name="op-column">
           <template #default="{ row }">
             <el-button link type="primary" :icon="Edit" v-hasPermi="['system:dict:edit']" @click="handleDataUpdate(row)">修改</el-button>
             <el-button link type="danger" :icon="Delete" v-hasPermi="['system:dict:remove']" @click="handleDataDelete(row)">删除</el-button>

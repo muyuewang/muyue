@@ -51,7 +51,7 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" width="180" />
-      <el-table-column label="操作" width="170" align="center" class-name="op-column">
+      <el-table-column label="操作" width="170" align="center" fixed="right" class-name="op-column">
         <template #default="{ row, $index }">
           <el-button link type="primary" :icon="View" v-hasPermi="['system:notice:query']" @click="handleView(row)">详情</el-button>
           <el-divider direction="vertical" />

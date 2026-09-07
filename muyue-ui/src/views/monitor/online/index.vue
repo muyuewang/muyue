@@ -23,7 +23,7 @@
       <el-table-column label="登录时间" min-width="170">
         <template #default="{ row }">{{ formatTime(row.loginTime) }}</template>
       </el-table-column>
-      <el-table-column label="操作" width="110" align="center" class-name="op-column">
+      <el-table-column label="操作" width="110" align="center" fixed="right" class-name="op-column">
         <template #default="{ row }">
           <el-button link type="danger" :icon="Delete" v-hasPermi="['monitor:online:forceLogout']" @click="handleForce(row)">强退</el-button>
         </template>
