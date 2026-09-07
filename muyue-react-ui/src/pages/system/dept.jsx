@@ -14,20 +14,34 @@ function toTreeData(nodes) {
   }))
 }
 
-/** 列表 → 树表数据 */
-function toTableTree(nodes) {
-  return (nodes || []).map((n) => ({
-    key: n.deptId,
-    deptId: n.deptId,
-    deptName: n.deptName,
-    orderNum: n.orderNum,
-    leader: n.leader,
-    phone: n.phone,
-    email: n.email,
-    status: n.status,
-    createTime: n.createTime,
-    children: n.children && n.children.length ? toTableTree(n.children) : undefined
-  }))
+/** 扁平列表 → 树（后端 dept/list 返回平铺，需前端组树） */
+function buildTree(list, idKey, parentKey) {
+  const map = {}
+  const input = list || []
+  input.forEach((item) => {
+    map[item[idKey]] = { ...item, key: item[idKey], children: [] }
+  })
+  const roots = []
+  input.forEach((item) => {
+    const node = map[item[idKey]]
+    const parent = map[item[parentKey]]
+    if (parent && item[parentKey] !== item[idKey]) {
+      parent.children.push(node)
+    } else {
+      roots.push(node)
+    }
+  })
+  const prune = (nodes) =>
+    nodes.map((n) => {
+      const next = { ...n }
+      if (next.children.length) {
+        next.children = prune(next.children)
+      } else {
+        delete next.children
+      }
+      return next
+    })
+  return prune(roots)
 }
 
 export default function SystemDept() {
@@ -45,7 +59,7 @@ export default function SystemDept() {
   const load = () => {
     setLoading(true)
     listDept().then((res) => {
-      const tree = toTableTree(res.data)
+      const tree = buildTree(res.data, 'deptId', 'parentId')
       setRows(tree)
       setExpandedKeys(collectKeys(tree))
       setLoading(false)

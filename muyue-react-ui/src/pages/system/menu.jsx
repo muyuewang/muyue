@@ -14,21 +14,34 @@ function toTreeData(nodes) {
   }))
 }
 
-function toTableTree(nodes) {
-  return (nodes || []).map((n) => ({
-    key: n.menuId,
-    menuId: n.menuId,
-    menuName: n.menuName,
-    icon: n.icon,
-    orderNum: n.orderNum,
-    path: n.path,
-    component: n.component,
-    perms: n.perms,
-    menuType: n.menuType,
-    status: n.status,
-    parentId: n.parentId,
-    children: n.children && n.children.length ? toTableTree(n.children) : undefined
-  }))
+/** 扁平列表 → 树（后端 menu/list 返回平铺，需前端组树） */
+function buildTree(list, idKey, parentKey) {
+  const map = {}
+  const input = list || []
+  input.forEach((item) => {
+    map[item[idKey]] = { ...item, key: item[idKey], children: [] }
+  })
+  const roots = []
+  input.forEach((item) => {
+    const node = map[item[idKey]]
+    const parent = map[item[parentKey]]
+    if (parent && item[parentKey] !== item[idKey]) {
+      parent.children.push(node)
+    } else {
+      roots.push(node)
+    }
+  })
+  const prune = (nodes) =>
+    nodes.map((n) => {
+      const next = { ...n }
+      if (next.children.length) {
+        next.children = prune(next.children)
+      } else {
+        delete next.children
+      }
+      return next
+    })
+  return prune(roots)
 }
 
 const typeTag = (v) => (
@@ -52,7 +65,7 @@ export default function SystemMenu() {
   const load = () => {
     setLoading(true)
     listMenu().then((res) => {
-      const tree = toTableTree(res.data)
+      const tree = buildTree(res.data, 'menuId', 'parentId')
       setRows(tree)
       setExpandedKeys(collectKeys(tree))
       setLoading(false)
