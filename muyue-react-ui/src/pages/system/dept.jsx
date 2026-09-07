@@ -3,7 +3,7 @@ import {
   PageContainer, ModalForm, ProFormText, ProFormRadio,
   ProFormTreeSelect, ProFormTextArea
 } from '@ant-design/pro-components'
-import { App, Popconfirm, Space, Tag } from 'antd'
+import { App, Popconfirm, Space, Table, Tag } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { listDept, getDept, addDept, updateDept, delDept, deptTreeSelect } from '../../api/dept'
 
@@ -91,13 +91,12 @@ export default function SystemDept() {
       <div style={{ marginBottom: 12 }}>
         <a onClick={() => openForm(null, 0)}><PlusOutlined /> 新增顶级部门</a>
       </div>
-      <a-table
+      <Table
         rowKey="deptId"
         columns={columns}
         dataSource={rows}
         loading={loading}
         pagination={false}
-        defaultExpandAllRows
       />
 
       <ModalForm

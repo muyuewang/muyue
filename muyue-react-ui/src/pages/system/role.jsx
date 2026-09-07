@@ -18,6 +18,7 @@ export default function SystemRole() {
   const [editRow, setEditRow] = useState(null)
   const [menuTree, setMenuTree] = useState([])
   const [checkedKeys, setCheckedKeys] = useState([])
+  const halfKeysRef = useRef([])
 
   const openForm = async (row) => {
     setEditRow(row || null)
@@ -25,11 +26,12 @@ export default function SystemRole() {
     if (row) {
       const [detail, tree] = await Promise.all([getRole(row.roleId), roleMenuTree(row.roleId)])
       setMenuTree(toTreeData(tree.data.menus))
-      setCheckedKeys((tree.data.checkedKeys || []).filter((k) => k < 90000000))
+      setCheckedKeys(tree.data.checkedKeys || [])
     } else {
       const tree = await roleMenuTree(0)
       setMenuTree(toTreeData(tree.data.menus))
       setCheckedKeys([])
+      halfKeysRef.current = []
     }
   }
 
@@ -99,7 +101,8 @@ export default function SystemRole() {
         width={640}
         modalProps={{ destroyOnClose: true }}
         onFinish={async (values) => {
-          const payload = { ...values, menuIds: checkedKeys }
+          // RuoYi 约定：父菜单（半选）也要提交，否则授权的子菜单无法在前端展示
+          const payload = { ...values, menuIds: [...checkedKeys, ...halfKeysRef.current] }
           if (editRow) {
             await updateRole({ roleId: editRow.roleId, ...payload })
             message.success('修改成功')
@@ -124,11 +127,15 @@ export default function SystemRole() {
         <ProFormTextArea name="remark" label="备注" />
         <div style={{ marginBottom: 8, fontWeight: 600 }}>菜单权限</div>
         <Tree
+          key={menuTree.length}
           checkable
           defaultExpandAll
           treeData={menuTree}
           checkedKeys={checkedKeys}
-          onCheck={(keys) => setCheckedKeys(keys)}
+          onCheck={(keys, info) => {
+            setCheckedKeys(keys)
+            halfKeysRef.current = info.halfCheckedKeys || []
+          }}
         />
       </ModalForm>
     </PageContainer>

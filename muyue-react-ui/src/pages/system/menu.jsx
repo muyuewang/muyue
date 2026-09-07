@@ -3,7 +3,7 @@ import {
   PageContainer, ModalForm, ProFormText, ProFormRadio,
   ProFormTreeSelect, ProFormSelect, ProFormDigit
 } from '@ant-design/pro-components'
-import { App, Popconfirm, Space, Tag } from 'antd'
+import { App, Popconfirm, Space, Table, Tag } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { listMenu, getMenu, menuTreeSelect, addMenu, updateMenu, delMenu } from '../../api/menu'
 
@@ -94,7 +94,7 @@ export default function SystemMenu() {
       <div style={{ marginBottom: 12 }}>
         <a onClick={() => openForm(null, 0)}><PlusOutlined /> 新增顶级菜单</a>
       </div>
-      <a-table
+      <Table
         rowKey="menuId"
         columns={columns}
         dataSource={rows}

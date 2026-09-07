@@ -71,7 +71,7 @@ function NoticeBell({ navigate }) {
 
   const content = (
     <div style={{ width: 320 }}>
-      {notices.length === 0 && <List emptyText="暂无消息通知" />}
+      {notices.length === 0 && <div style={{ padding: 24, textAlign: 'center', color: '#999' }}>暂无消息通知</div>}
       <List
         size="small"
         dataSource={notices}
@@ -134,7 +134,7 @@ export default function Layout({ menus }) {
       fixSiderbar
       fixedHeader
       location={{ pathname: location.pathname }}
-      menu={{ request: () => toMenuData(menus), autoClose: false }}
+      menu={{ request: async () => toMenuData(menus), autoClose: false }}
       menuItemRender={(item, dom) => (
         <div onClick={() => item.path && navigate(item.path)}>{dom}</div>
       )}

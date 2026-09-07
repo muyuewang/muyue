@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import {
   PageContainer,
   ProTable,
+  ProForm,
   ModalForm,
   ProFormText,
   ProFormSelect,
@@ -67,6 +68,7 @@ export default function SystemUser() {
         <Col xs={24} md={5}>
           <Card size="small" title="部门列表" style={{ minHeight: 480 }}>
             <Tree
+              key={treeData.length}
               treeData={treeData}
               defaultExpandAll
               selectedKeys={deptId ? [deptId] : []}
