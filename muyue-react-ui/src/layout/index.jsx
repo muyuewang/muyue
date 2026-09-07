@@ -14,23 +14,39 @@ import { removeToken } from '../utils/request'
 
 const { Text } = Typography
 
-/** antd 图标名 → 组件（按需映射常用图标） */
+/** 后端 Element 图标名 → antd 图标 */
 import * as Icons from '@ant-design/icons'
+const iconAlias = {
+  User: 'UserOutlined', UserFilled: 'UserOutlined', ShoppingCart: 'ShoppingCartOutlined',
+  Bell: 'BellOutlined', OfficeBuilding: 'BankOutlined', Document: 'FileTextOutlined',
+  Connection: 'LinkOutlined', Cpu: 'HddOutlined', Setting: 'SettingOutlined',
+  Menu: 'MenuOutlined', Collection: 'AppstoreOutlined', List: 'BarsOutlined',
+  MagicStick: 'ToolOutlined', Monitor: 'DesktopOutlined', Edit: 'EditOutlined',
+  EditPen: 'FormOutlined', Message: 'MessageOutlined', Email: 'MailOutlined',
+  Download: 'DownloadOutlined', Upload: 'UploadOutlined', Chart: 'BarChartOutlined',
+  Dashboard: 'DashboardOutlined', Tree: 'ClusterOutlined', DataBoard: 'FundOutlined'
+}
 function menuIcon(name) {
-  const Comp = Icons[name]
-  return Comp ? <Comp /> : null
+  const compName = iconAlias[name] || 'FolderOutlined'
+  const Comp = Icons[compName]
+  return Comp ? <Comp /> : <Icons.FolderOutlined />
 }
 
-/** 后端路由树 → ProLayout 菜单数据 */
-function toMenuData(routers) {
+/** 后端路由树 → ProLayout 菜单数据（子路径拼父前缀） */
+function toMenuData(routers, parentPath = '') {
   return (routers || [])
     .filter((r) => !r.hidden)
-    .map((r) => ({
-      key: r.path.startsWith('/') ? r.path : '/' + r.path,
-      name: (r.meta && r.meta.title) || r.name,
-      icon: r.meta && r.meta.icon ? menuIcon(r.meta.icon) : null,
-      routes: r.children && r.children.length ? toMenuData(r.children) : undefined
-    }))
+    .map((r) => {
+      const path = r.path.startsWith('/')
+        ? r.path
+        : (parentPath ? parentPath + '/' + r.path : '/' + r.path)
+      return {
+        key: path,
+        name: (r.meta && r.meta.title) || r.name,
+        icon: r.meta && r.meta.icon ? menuIcon(r.meta.icon) : null,
+        routes: r.children && r.children.length ? toMenuData(r.children, path) : undefined
+      }
+    })
 }
 
 function NoticeBell({ navigate }) {
@@ -135,11 +151,13 @@ export default function Layout({ menus }) {
           <Dropdown
             menu={{
               items: [
+                { key: 'profile', icon: <SettingOutlined />, label: '个人中心' },
                 { key: 'reload', icon: <ReloadOutlined />, label: '刷新页面' },
                 { type: 'divider' },
                 { key: 'logout', icon: <LogoutOutlined />, danger: true, label: '退出登录' }
               ],
               onClick: ({ key }) => {
+                if (key === 'profile') navigate('/user/profile')
                 if (key === 'logout') onLogout()
                 if (key === 'reload') window.location.reload()
               }

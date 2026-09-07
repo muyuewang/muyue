@@ -6,10 +6,22 @@ import Layout from './layout'
 import Login from './pages/login'
 import Home from './pages/home'
 import SystemUser from './pages/system/user'
+import SystemRole from './pages/system/role'
+import SystemMenu from './pages/system/menu'
+import SystemDept from './pages/system/dept'
+import SystemPost from './pages/system/post'
+import SystemDict from './pages/system/dict'
 import SystemNotice from './pages/system/notice'
 import OrderOrder from './pages/order/order'
 import MonitorOperlog from './pages/monitor/operlog'
 import MonitorLogininfor from './pages/monitor/logininfor'
+import MonitorOnline from './pages/monitor/online'
+import MonitorServer from './pages/monitor/server'
+import ToolGen from './pages/tool/gen'
+import ToolMail from './pages/tool/mail'
+import ToolFile from './pages/tool/file'
+import Profile from './pages/profile'
+import Screen from './pages/screen'
 import Placeholder from './pages/placeholder'
 
 /**
@@ -17,12 +29,22 @@ import Placeholder from './pages/placeholder'
  * 新增页面时在这里登记即可，未登记的菜单自动落到 Placeholder
  */
 const componentMap = {
-  'index': Home,
   'system/user/index': SystemUser,
+  'system/role/index': SystemRole,
+  'system/menu/index': SystemMenu,
+  'system/dept/index': SystemDept,
+  'system/post/index': SystemPost,
+  'system/dict/index': SystemDict,
   'system/notice/index': SystemNotice,
   'order/order/index': OrderOrder,
   'monitor/operlog/index': MonitorOperlog,
-  'monitor/logininfor/index': MonitorLogininfor
+  'monitor/logininfor/index': MonitorLogininfor,
+  'monitor/online/index': MonitorOnline,
+  'monitor/server/index': MonitorServer,
+  'tool/gen/index': ToolGen,
+  'tool/mail/index': ToolMail,
+  'tool/file/index': ToolFile,
+  'screen/jump': Screen
 }
 
 /** 把后端路由树打平成 { path, component, title } 列表 */
@@ -59,6 +81,9 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout menus={menus} />}>
+          {/* 首页是静态路由（后端不下发），固定为 /index */}
+          <Route path="index" element={<Home />} />
+          <Route path="user/profile" element={<Profile />} />
           <Route index element={<Navigate to="/index" replace />} />
           {(menus || []).length > 0 &&
             flattenRouters(menus).map((r) => {
