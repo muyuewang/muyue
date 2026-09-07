@@ -39,7 +39,7 @@
       <el-table-column label="上传者" prop="createBy" width="110" align="center" />
       <el-table-column label="上传时间" prop="createTime" width="180" />
       <el-table-column label="操作" width="180" align="center" fixed="right" class-name="op-column">
-        <template #default="{ row }">
+        <template #default="{ row, $index }">
           <el-button link type="primary" :icon="View" @click="handlePreview(row)">预览</el-button>
           <el-divider direction="vertical" />
           <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">

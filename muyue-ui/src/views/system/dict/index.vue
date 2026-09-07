@@ -35,7 +35,7 @@
         </el-table-column>
         <el-table-column label="备注" prop="remark" show-overflow-tooltip />
         <el-table-column label="操作" width="170" align="center" class-name="op-column">
-          <template #default="{ row }">
+          <template #default="{ row, $index }">
             <el-button link type="primary" :icon="Edit" v-hasPermi="['system:dict:edit']" @click.stop="handleTypeUpdate(row)">修改</el-button>
             <el-divider direction="vertical" />
             <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleTypeAction(cmd, row, $index)">

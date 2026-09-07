@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" width="170" />
       <el-table-column label="操作" width="170" align="center" fixed="right" class-name="op-column">
-        <template #default="{ row }">
+        <template #default="{ row, $index }">
           <el-button v-hasPermi="['system:menu:edit']" link type="primary" icon="Edit" @click="handleUpdate(row)">修改</el-button>
           <el-divider direction="vertical" />
           <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">

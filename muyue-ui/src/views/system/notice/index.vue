@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" width="180" />
       <el-table-column label="操作" width="170" align="center" class-name="op-column">
-        <template #default="{ row }">
+        <template #default="{ row, $index }">
           <el-button link type="primary" :icon="View" v-hasPermi="['system:notice:query']" @click="handleView(row)">详情</el-button>
           <el-divider direction="vertical" />
           <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">

@@ -59,7 +59,7 @@
       <el-table-column label="收货地址" prop="address" show-overflow-tooltip />
       <el-table-column label="下单时间" prop="createTime" width="180" />
       <el-table-column label="操作" width="170" align="center" fixed="right" class-name="op-column">
-        <template #default="{ row }">
+        <template #default="{ row, $index }">
           <el-button link type="primary" :icon="View" v-hasPermi="['order:order:query']" @click="handleDetail(row)">明细</el-button>
           <el-divider direction="vertical" />
           <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">
