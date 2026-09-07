@@ -37,7 +37,7 @@ export default function SystemUser() {
     { title: '编号', dataIndex: 'userId', width: 70 },
     { title: '账号', dataIndex: 'userName', width: 110, ellipsis: true },
     { title: '昵称', dataIndex: 'nickName', width: 110, ellipsis: true },
-    { title: '部门', dataIndex: ['dept', 'deptName'], width: 130, ellipsis: true },
+    { title: '部门', dataIndex: 'deptName', width: 130, ellipsis: true },
     { title: '手机号', dataIndex: 'phonenumber', width: 130 },
     { title: '状态', dataIndex: 'status', width: 80, align: 'center', render: statusTag },
     { title: '创建时间', dataIndex: 'createTime', width: 170 },

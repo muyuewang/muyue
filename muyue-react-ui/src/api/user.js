@@ -16,7 +16,7 @@ export function delUser(ids) {
   return request({ url: '/system/user/' + ids, method: 'delete' })
 }
 export function deptTree() {
-  return request({ url: '/system/user/deptTree', method: 'get' })
+  return request({ url: '/system/dept/treeselect', method: 'get' })
 }
 export function changeUserStatus(userId, status) {
   return request({ url: '/system/user/changeStatus', method: 'put', data: { userId, status } })

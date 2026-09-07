@@ -32,7 +32,7 @@ function menuIcon(name) {
   return Comp ? <Comp /> : <Icons.FolderOutlined />
 }
 
-/** 后端路由树 → ProLayout 菜单数据（子路径拼父前缀） */
+/** 后端路由树 → ProLayout 菜单数据（子路径拼父前缀，ProLayout 认 path 字段） */
 function toMenuData(routers, parentPath = '') {
   return (routers || [])
     .filter((r) => !r.hidden)
@@ -41,7 +41,7 @@ function toMenuData(routers, parentPath = '') {
         ? r.path
         : (parentPath ? parentPath + '/' + r.path : '/' + r.path)
       return {
-        key: path,
+        path,
         name: (r.meta && r.meta.title) || r.name,
         icon: r.meta && r.meta.icon ? menuIcon(r.meta.icon) : null,
         routes: r.children && r.children.length ? toMenuData(r.children, path) : undefined
