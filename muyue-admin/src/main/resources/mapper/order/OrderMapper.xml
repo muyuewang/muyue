@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.order.mapper.OrderMapper">
+
+    <select id="selectOrderList" resultType="Order">
+        SELECT o.order_id, o.order_no, o.user_name, o.total_amount, o.status, o.pay_type,
+               o.receiver, o.phone, o.address,
+               o.create_by, o.create_time, o.update_by, o.update_time, o.remark
+        FROM biz_order o
+        <where>
+            1 = 1
+            <if test="order.orderNo != null and order.orderNo != ''">
+                AND o.order_no LIKE '%' || #{order.orderNo} || '%'
+            </if>
+            <if test="order.userName != null and order.userName != ''">
+                AND o.user_name LIKE '%' || #{order.userName} || '%'
+            </if>
+            <if test="order.receiver != null and order.receiver != ''">
+                AND o.receiver LIKE '%' || #{order.receiver} || '%'
+            </if>
+            <if test="order.status != null and order.status != ''">
+                AND o.status = #{order.status}
+            </if>
+            <if test="order.payType != null and order.payType != ''">
+                AND o.pay_type = #{order.payType}
+            </if>
+        </where>
+        ORDER BY o.create_time DESC
+    </select>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.system.mapper.SysPostMapper">
+
+    <select id="selectPostList" resultType="SysPost">
+        SELECT p.post_id, p.post_code, p.post_name, p.post_sort, p.status,
+               p.create_by, p.create_time, p.update_by, p.update_time, p.remark
+        FROM sys_post p
+        <where>
+            1 = 1
+            <if test="post.postCode != null and post.postCode != ''">
+                AND p.post_code LIKE '%' || #{post.postCode} || '%'
+            </if>
+            <if test="post.postName != null and post.postName != ''">
+                AND p.post_name LIKE '%' || #{post.postName} || '%'
+            </if>
+            <if test="post.status != null and post.status != ''">
+                AND p.status = #{post.status}
+            </if>
+        </where>
+        ORDER BY p.post_sort
+    </select>
+
+    <select id="selectPostsByUserId" resultType="SysPost">
+        SELECT p.post_id, p.post_code, p.post_name, p.post_sort, p.status
+        FROM sys_post p
+        LEFT JOIN sys_user_post up ON up.post_id = p.post_id
+        WHERE up.user_id = #{userId}
+        ORDER BY p.post_sort
+    </select>
+
+    <insert id="insertUserPost">
+        INSERT INTO sys_user_post (user_id, post_id) VALUES (#{userId}, #{postId})
+    </insert>
+
+    <delete id="deleteUserPostByUserId">
+        DELETE FROM sys_user_post WHERE user_id = #{userId}
+    </delete>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.system.mapper.SysRoleMapper">
+
+    <sql id="selectRoleVo">
+        SELECT r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope,
+               r.menu_check_strictly, r.dept_check_strictly, r.status, r.del_flag,
+               r.create_by, r.create_time, r.update_by, r.update_time, r.remark
+        FROM sys_role r
+    </sql>
+
+    <select id="selectRoleList" resultType="SysRole">
+        <include refid="selectRoleVo"/>
+        <where>
+            r.del_flag = '0'
+            <if test="role.roleName != null and role.roleName != ''">
+                AND r.role_name LIKE '%' || #{role.roleName} || '%'
+            </if>
+            <if test="role.roleKey != null and role.roleKey != ''">
+                AND r.role_key LIKE '%' || #{role.roleKey} || '%'
+            </if>
+            <if test="role.status != null and role.status != ''">
+                AND r.status = #{role.status}
+            </if>
+        </where>
+        ORDER BY r.role_sort, r.role_id
+    </select>
+
+    <select id="selectRolesByUserId" resultType="SysRole">
+        <include refid="selectRoleVo"/>
+        LEFT JOIN sys_user_role ur ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+          AND r.del_flag = '0'
+        ORDER BY r.role_sort, r.role_id
+    </select>
+
+    <select id="selectRoleKeysByUserId" resultType="java.lang.String">
+        SELECT r.role_key
+        FROM sys_role r
+        LEFT JOIN sys_user_role ur ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+          AND r.del_flag = '0'
+          AND r.status = '0'
+    </select>
+
+    <select id="selectMenuIdsByRoleId" resultType="java.lang.Long">
+        SELECT rm.menu_id
+        FROM sys_role_menu rm
+        WHERE rm.role_id = #{roleId}
+    </select>
+
+    <insert id="insertRoleMenu">
+        INSERT INTO sys_role_menu (role_id, menu_id) VALUES (#{roleId}, #{menuId})
+    </insert>
+
+    <delete id="deleteRoleMenuByRoleId">
+        DELETE FROM sys_role_menu WHERE role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteRoleMenus">
+        DELETE FROM sys_role_menu WHERE role_id IN
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+
+    <select id="countUserRoleByRoleId" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM sys_user_role ur WHERE ur.role_id = #{roleId}
+    </select>
+
+    <delete id="deleteUserRoleByRoleIds">
+        DELETE FROM sys_user_role WHERE role_id IN
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+</mapper>

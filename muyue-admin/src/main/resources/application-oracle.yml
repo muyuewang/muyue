@@ -1,0 +1,28 @@
+# =========================================================
+# Oracle 数据源：执行 sql/oracle/*.sql 后启用本 profile
+# 启动方式：--spring.profiles.active=oracle
+# =========================================================
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    # 服务名方式（推荐）：jdbc:oracle:thin:@//host:port/service_name
+    url: jdbc:oracle:thin:@//127.0.0.1:1521/XEPDB1
+    # SID 方式：jdbc:oracle:thin:@127.0.0.1:1521:ORCL
+    # url: jdbc:oracle:thin:@127.0.0.1:1521:ORCL
+    username: muyue
+    password: muyue
+    hikari:
+      connection-test-query: SELECT 1 FROM DUAL
+      minimum-idle: 5
+      maximum-pool-size: 30
+  sql:
+    # Oracle 使用 sql/oracle/*.sql 手动初始化，禁用自动脚本
+    init:
+      mode: never
+
+mybatis-plus:
+  configuration:
+    database-id: oracle
+
+muyue:
+  db-type: oracle

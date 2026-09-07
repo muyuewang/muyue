@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.system.mapper.SysDeptMapper">
+
+    <sql id="selectDeptVo">
+        SELECT d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader,
+               d.phone, d.email, d.status, d.del_flag,
+               d.create_by, d.create_time, d.update_by, d.update_time
+        FROM sys_dept d
+    </sql>
+
+    <select id="selectDeptList" resultType="SysDept">
+        <include refid="selectDeptVo"/>
+        <where>
+            d.del_flag = '0'
+            <if test="dept.deptId != null">
+                AND d.dept_id = #{dept.deptId}
+            </if>
+            <if test="dept.parentId != null">
+                AND d.parent_id = #{dept.parentId}
+            </if>
+            <if test="dept.deptName != null and dept.deptName != ''">
+                AND d.dept_name LIKE '%' || #{dept.deptName} || '%'
+            </if>
+            <if test="dept.status != null and dept.status != ''">
+                AND d.status = #{dept.status}
+            </if>
+        </where>
+        ORDER BY d.parent_id, d.order_num
+    </select>
+
+    <select id="selectNormalChildrenDeptById" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM sys_dept d
+        WHERE d.status = '0'
+          AND d.del_flag = '0'
+          AND d.parent_id = #{deptId}
+    </select>
+
+    <select id="countUserByDeptId" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM sys_user u
+        WHERE u.dept_id = #{deptId}
+          AND u.del_flag = '0'
+    </select>
+</mapper>

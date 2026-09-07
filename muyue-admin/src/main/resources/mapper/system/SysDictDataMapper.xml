@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.system.mapper.SysDictDataMapper">
+
+    <select id="selectDictDataList" resultType="SysDictData">
+        SELECT d.dict_code, d.dict_sort, d.dict_label, d.dict_value, d.dict_type, d.css_class,
+               d.list_class, d.is_default, d.status, d.create_by, d.create_time, d.update_by,
+               d.update_time, d.remark
+        FROM sys_dict_data d
+        <where>
+            1 = 1
+            <if test="dictData.dictType != null and dictData.dictType != ''">
+                AND d.dict_type = #{dictData.dictType}
+            </if>
+            <if test="dictData.dictLabel != null and dictData.dictLabel != ''">
+                AND d.dict_label LIKE '%' || #{dictData.dictLabel} || '%'
+            </if>
+            <if test="dictData.status != null and dictData.status != ''">
+                AND d.status = #{dictData.status}
+            </if>
+        </where>
+        ORDER BY d.dict_sort
+    </select>
+</mapper>

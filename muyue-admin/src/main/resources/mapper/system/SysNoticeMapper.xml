@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.system.mapper.SysNoticeMapper">
+
+    <select id="selectNoticeList" resultType="SysNotice">
+        SELECT n.notice_id, n.notice_title, n.notice_type, n.status,
+               n.create_by, n.create_time, n.update_by, n.update_time, n.remark,
+               CASE WHEN EXISTS (
+                   SELECT 1 FROM sys_notice_read r
+                   WHERE r.notice_id = n.notice_id AND r.user_id = #{notice.userId}
+               ) THEN 1 ELSE 0 END AS is_read
+        FROM sys_notice n
+        <where>
+            1 = 1
+            <if test="notice.noticeTitle != null and notice.noticeTitle != ''">
+                AND n.notice_title LIKE '%' || #{notice.noticeTitle} || '%'
+            </if>
+            <if test="notice.noticeType != null and notice.noticeType != ''">
+                AND n.notice_type = #{notice.noticeType}
+            </if>
+            <if test="notice.createBy != null and notice.createBy != ''">
+                AND n.create_by LIKE '%' || #{notice.createBy} || '%'
+            </if>
+        </where>
+        ORDER BY n.create_time DESC
+    </select>
+
+    <insert id="insertNoticeRead">
+        INSERT INTO sys_notice_read (user_id, notice_id, read_time)
+        VALUES (#{userId}, #{noticeId}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <select id="selectNoticeReadCount" resultType="int">
+        SELECT COUNT(*) FROM sys_notice_read
+        WHERE user_id = #{userId} AND notice_id = #{noticeId}
+    </select>
+
+    <select id="selectUnreadCount" resultType="int">
+        SELECT COUNT(*) FROM sys_notice n
+        WHERE n.status = '0'
+          AND NOT EXISTS (
+              SELECT 1 FROM sys_notice_read r
+              WHERE r.notice_id = n.notice_id AND r.user_id = #{userId}
+          )
+    </select>
+</mapper>

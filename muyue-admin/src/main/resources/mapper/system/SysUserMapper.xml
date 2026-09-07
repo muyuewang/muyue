@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.system.mapper.SysUserMapper">
+
+    <sql id="selectUserVo">
+        SELECT u.user_id, u.dept_id, u.user_name, u.nick_name, u.user_type, u.email, u.phonenumber,
+               u.sex, u.avatar, u.password, u.status, u.del_flag, u.login_ip, u.login_date,
+               u.create_by, u.create_time, u.update_by, u.update_time, u.remark,
+               d.dept_name, d.leader
+        FROM sys_user u
+        LEFT JOIN sys_dept d ON u.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectUserList" resultType="SysUser">
+        <include refid="selectUserVo"/>
+        <where>
+            u.del_flag = '0'
+            <if test="user.userName != null and user.userName != ''">
+                AND u.user_name LIKE '%' || #{user.userName} || '%'
+            </if>
+            <if test="user.nickName != null and user.nickName != ''">
+                AND u.nick_name LIKE '%' || #{user.nickName} || '%'
+            </if>
+            <if test="user.status != null and user.status != ''">
+                AND u.status = #{user.status}
+            </if>
+            <if test="user.phonenumber != null and user.phonenumber != ''">
+                AND u.phonenumber LIKE '%' || #{user.phonenumber} || '%'
+            </if>
+            <if test="user.deptId != null">
+                AND (u.dept_id = #{user.deptId}
+                     OR u.dept_id IN (SELECT t.dept_id FROM sys_dept t
+                                      WHERE t.del_flag = '0'
+                                        AND t.ancestors LIKE '%' || #{user.deptId} || '%'))
+            </if>
+        </where>
+        ORDER BY u.user_id
+    </select>
+
+    <select id="selectUserByUserName" resultType="SysUser">
+        <include refid="selectUserVo"/>
+        WHERE u.user_name = #{userName} AND u.del_flag = '0'
+    </select>
+
+    <select id="selectUserById" resultType="SysUser">
+        <include refid="selectUserVo"/>
+        WHERE u.user_id = #{userId} AND u.del_flag = '0'
+    </select>
+
+    <select id="selectRoleKeysByUserId" resultType="java.lang.String">
+        SELECT r.role_key
+        FROM sys_role r
+        LEFT JOIN sys_user_role ur ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+          AND r.del_flag = '0'
+          AND r.status = '0'
+    </select>
+
+    <insert id="insertUserRole">
+        INSERT INTO sys_user_role (user_id, role_id) VALUES (#{userId}, #{roleId})
+    </insert>
+
+    <delete id="deleteUserRoleByUserId">
+        DELETE FROM sys_user_role WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="deleteUserRoles">
+        DELETE FROM sys_user_role WHERE user_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

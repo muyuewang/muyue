@@ -1,0 +1,30 @@
+# ===== Java / Maven =====
+target/
+*.class
+*.war
+
+# ===== Node / Vite =====
+node_modules/
+dist/
+*.local
+
+# ===== 运行时数据（SQLite 数据库 / 上传文件），勿提交 =====
+data/
+muyue-admin/data/
+*.db
+*.db-journal
+
+# ===== 日志 =====
+*.log
+logs/
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# ===== OS =====
+.DS_Store
+Thumbs.db

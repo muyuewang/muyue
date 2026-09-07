@@ -1,0 +1,28 @@
+# =========================================================
+# 内嵌数据库 SQLite（默认）：无需安装数据库，启动自动建库建表并初始化数据
+# 数据文件：项目根目录下 data/muyue.db（删除该目录即可重置）
+# =========================================================
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:./data/muyue.db
+    hikari:
+      connection-test-query: SELECT 1
+      # SQLite 为文件库，单连接可避免 SQLITE_BUSY
+      maximum-pool-size: 1
+      minimum-idle: 1
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/sqlite/schema.sql
+      data-locations: classpath:db/sqlite/data.sql
+      encoding: UTF-8
+      separator: ;
+      continue-on-error: false
+
+mybatis-plus:
+  configuration:
+    database-id: sqlite
+
+muyue:
+  db-type: sqlite

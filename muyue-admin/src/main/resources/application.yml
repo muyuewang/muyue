@@ -1,0 +1,83 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: muyue-admin
+  profiles:
+    # 默认使用内嵌 SQLite，开箱即跑；切换到 Oracle 改为 oracle（见 README）
+    active: sqlite
+  # Redis：多机部署时验证码 / 登录会话需共享缓存；单机默认 muyue.cache.type=memory 即可
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      # password:
+      timeout: 5s
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+  jackson:
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 50MB
+
+# MyBatis-Plus
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  type-aliases-package: com.muyue.common.core.domain.entity
+  global-config:
+    banner: false
+    db-config:
+      id-type: assign_id
+      table-prefix: sys_
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    jdbc-type-for-null: 'null'
+    # 开发环境打印 SQL，生产可关闭
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 自定义配置
+muyue:
+  cache:
+    # memory=单机内存缓存（默认，开箱即跑）；redis=多机部署共享缓存（验证码/登录会话），需启动 Redis 服务
+    type: memory
+  # 安全相关
+  security:
+    # 匿名访问地址（逗号分隔）
+    anonymous: /captchaImage,/login
+    # 排除鉴权的静态资源（Spring Security 6 使用 PathPattern，** 只能出现在末尾）
+    excludes: /favicon.ico,/webjars/**,/static/**,/css/**,/js/**,/img/**,/assets/**,/*.html,/*.ico
+  jwt:
+    # 密钥（生产环境务必修改）
+    secret: muyueScaffoldSecretKeyForJwtTokenSignMustBeLongEnough2026
+    # 令牌有效期（分钟），默认 12 小时
+    expire-time: 720
+    # 令牌请求头
+    header: Authorization
+  captcha:
+    enabled: true
+    type: math
+  user:
+    # 初始化默认密码
+    default-password: admin123
+  file:
+    # 上传文件本地存储根目录（Windows 示例，注意使用正斜杠）
+    profile: D:/muyue/uploadPath
+    # 静态资源访问前缀：/profile/**
+    url-prefix: /profile
+    # 单个文件大小上限（字节），默认 5MB
+    max-file-size: 5242880
+
+logging:
+  level:
+    com.muyue: debug
+    org.springframework.security: info

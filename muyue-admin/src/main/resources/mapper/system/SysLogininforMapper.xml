@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.system.mapper.SysLogininforMapper">
+
+    <select id="selectLogininforList" resultType="SysLogininfor">
+        SELECT l.info_id, l.user_name, l.ipaddr, l.status, l.msg, l.access_time
+        FROM sys_logininfor l
+        <where>
+            1 = 1
+            <if test="logininfor.userName != null and logininfor.userName != ''">
+                AND l.user_name LIKE '%' || #{logininfor.userName} || '%'
+            </if>
+            <if test="logininfor.ipaddr != null and logininfor.ipaddr != ''">
+                AND l.ipaddr LIKE '%' || #{logininfor.ipaddr} || '%'
+            </if>
+            <if test="logininfor.status != null and logininfor.status != ''">
+                AND l.status = #{logininfor.status}
+            </if>
+            <if test="logininfor.beginTime != null and logininfor.beginTime != ''">
+                <choose>
+                    <when test="_databaseId == 'oracle'">
+                        AND l.access_time &gt;= TO_TIMESTAMP(#{logininfor.beginTime}, 'YYYY-MM-DD HH24:MI:SS')
+                    </when>
+                    <otherwise>
+                        AND l.access_time &gt;= #{logininfor.beginTime}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="logininfor.endTime != null and logininfor.endTime != ''">
+                <choose>
+                    <when test="_databaseId == 'oracle'">
+                        AND l.access_time &lt;= TO_TIMESTAMP(#{logininfor.endTime}, 'YYYY-MM-DD HH24:MI:SS')
+                    </when>
+                    <otherwise>
+                        AND l.access_time &lt;= #{logininfor.endTime}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY l.access_time DESC, l.info_id DESC
+    </select>
+
+    <delete id="cleanLogininfor">
+        DELETE FROM sys_logininfor
+    </delete>
+</mapper>

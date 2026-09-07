@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muyue.system.mapper.SysOperLogMapper">
+
+    <sql id="selectOperLogVo">
+        SELECT l.oper_id, l.title, l.business_type, l.method, l.request_method, l.operator_type,
+               l.oper_name, l.dept_name, l.oper_url, l.oper_ip, l.oper_location, l.oper_param,
+               l.json_result, l.status, l.error_msg, l.oper_time, l.cost_time
+        FROM sys_oper_log l
+    </sql>
+
+    <select id="selectOperLogList" resultType="SysOperLog">
+        <include refid="selectOperLogVo"/>
+        <where>
+            1 = 1
+            <if test="operLog.title != null and operLog.title != ''">
+                AND l.title LIKE '%' || #{operLog.title} || '%'
+            </if>
+            <if test="operLog.businessType != null">
+                AND l.business_type = #{operLog.businessType}
+            </if>
+            <if test="operLog.status != null">
+                AND l.status = #{operLog.status}
+            </if>
+            <if test="operLog.operName != null and operLog.operName != ''">
+                AND l.oper_name LIKE '%' || #{operLog.operName} || '%'
+            </if>
+            <if test="operLog.operIp != null and operLog.operIp != ''">
+                AND l.oper_ip LIKE '%' || #{operLog.operIp} || '%'
+            </if>
+            <if test="operLog.beginTime != null and operLog.beginTime != ''">
+                <choose>
+                    <when test="_databaseId == 'oracle'">
+                        AND l.oper_time &gt;= TO_TIMESTAMP(#{operLog.beginTime}, 'YYYY-MM-DD HH24:MI:SS')
+                    </when>
+                    <otherwise>
+                        AND l.oper_time &gt;= #{operLog.beginTime}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="operLog.endTime != null and operLog.endTime != ''">
+                <choose>
+                    <when test="_databaseId == 'oracle'">
+                        AND l.oper_time &lt;= TO_TIMESTAMP(#{operLog.endTime}, 'YYYY-MM-DD HH24:MI:SS')
+                    </when>
+                    <otherwise>
+                        AND l.oper_time &lt;= #{operLog.endTime}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY l.oper_time DESC, l.oper_id DESC
+    </select>
+
+    <delete id="cleanOperLog">
+        DELETE FROM sys_oper_log
+    </delete>
+</mapper>
