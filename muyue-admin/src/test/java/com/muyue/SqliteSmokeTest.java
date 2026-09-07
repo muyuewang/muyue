@@ -10,6 +10,7 @@ import com.muyue.common.cache.CacheDelegate;
 import com.muyue.common.core.domain.vo.CaptchaVo;
 import com.muyue.common.core.domain.vo.RouterVo;
 import com.muyue.common.utils.JwtUtils;
+import com.muyue.web.service.CaptchaService;
 import com.muyue.system.service.ISysDeptService;
 import com.muyue.system.service.ISysMenuService;
 import com.muyue.system.service.ISysOperLogService;

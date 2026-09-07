@@ -41,7 +41,7 @@
 
     <el-table v-loading="loading" :data="logList" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" align="center" />
-      <el-table-column label="日志编号" prop="operId" width="100" />
+      <el-table-column label="序号" type="index" :index="indexMethod" width="60" align="center" />
       <el-table-column label="系统模块" prop="title" min-width="110" show-overflow-tooltip />
       <el-table-column label="操作类型" width="100" align="center">
         <template #default="{ row }">
@@ -149,6 +149,11 @@ const queryParams = reactive({
 function businessLabel(value) {
   const item = businessOptions.find((option) => option.value === value)
   return item ? item.label : '其它'
+}
+
+/** 序号跨页连续 */
+function indexMethod(index) {
+  return (queryParams.pageNum - 1) * queryParams.pageSize + index + 1
 }
 
 function businessTagType(value) {
