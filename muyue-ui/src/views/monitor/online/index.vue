@@ -14,11 +14,11 @@
     </el-form>
 
     <el-table :data="list" v-loading="loading" border class="page-container">
-      <el-table-column label="会话编号" align="center" min-width="220">
+      <el-table-column label="会话编号" align="center" min-width="220" show-overflow-tooltip>
         <template #default="{ row }">{{ mask(row.tokenId) }}</template>
       </el-table-column>
-      <el-table-column label="登录名称" prop="userName" min-width="120" />
-      <el-table-column label="部门" prop="deptName" min-width="120" />
+      <el-table-column label="登录名称" prop="userName" min-width="120" show-overflow-tooltip />
+      <el-table-column label="部门" prop="deptName" min-width="120" show-overflow-tooltip />
       <el-table-column label="主机" prop="ipaddr" min-width="130" />
       <el-table-column label="登录时间" min-width="170">
         <template #default="{ row }">{{ formatTime(row.loginTime) }}</template>

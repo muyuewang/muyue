@@ -47,9 +47,9 @@
         <el-table v-loading="loading" :data="userList" border @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="用户ID" prop="userId" width="90" />
-          <el-table-column label="登录账号" prop="userName" min-width="110" />
-          <el-table-column label="用户昵称" prop="nickName" min-width="110" />
-          <el-table-column label="部门" prop="deptName" min-width="120" />
+          <el-table-column label="登录账号" prop="userName" min-width="110" show-overflow-tooltip />
+          <el-table-column label="用户昵称" prop="nickName" min-width="110" show-overflow-tooltip />
+          <el-table-column label="部门" prop="deptName" min-width="120" show-overflow-tooltip />
           <el-table-column label="手机号码" prop="phonenumber" min-width="120" />
           <el-table-column label="状态" width="90" align="center">
             <template #default="{ row }">

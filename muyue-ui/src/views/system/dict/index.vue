@@ -26,8 +26,8 @@
       </el-row>
       <el-table :data="typeList" v-loading="typeLoading" border height="calc(100vh - 280px)" @selection-change="handleTypeSelect" @row-click="handleRowClick" class="page-container">
         <el-table-column type="selection" width="45" align="center" />
-        <el-table-column label="字典名称" prop="dictName" />
-        <el-table-column label="字典类型" prop="dictType" />
+        <el-table-column label="字典名称" prop="dictName" show-overflow-tooltip />
+        <el-table-column label="字典类型" prop="dictType" show-overflow-tooltip />
         <el-table-column label="状态" width="80" align="center">
           <template #default="{ row }">
             <el-tag :type="row.status === '0' ? 'success' : 'danger'">{{ row.status === '0' ? '正常' : '停用' }}</el-tag>
@@ -77,8 +77,8 @@
       <el-table :data="dataList" v-loading="dataLoading" border @selection-change="handleDataSelect" class="page-container">
         <el-table-column type="selection" width="45" align="center" />
         <el-table-column label="字典编码" prop="dictCode" width="90" align="center" />
-        <el-table-column label="字典标签" prop="dictLabel" />
-        <el-table-column label="字典键值" prop="dictValue" />
+        <el-table-column label="字典标签" prop="dictLabel" show-overflow-tooltip />
+        <el-table-column label="字典键值" prop="dictValue" show-overflow-tooltip />
         <el-table-column label="回显样式" prop="listClass" width="100" align="center">
           <template #default="{ row }">
             <el-tag :type="(row.listClass || 'primary')">{{ row.listClass || 'primary' }}</el-tag>

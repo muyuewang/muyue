@@ -95,7 +95,7 @@
       </el-descriptions>
       <el-table :data="detailOrder?.items || []" border class="detail-table">
         <el-table-column label="序号" type="index" width="60" align="center" />
-        <el-table-column label="商品名称" prop="productName" />
+        <el-table-column label="商品名称" prop="productName" show-overflow-tooltip />
         <el-table-column label="单价" width="120" align="right">
           <template #default="{ row }">￥{{ formatAmount(row.price) }}</template>
         </el-table-column>

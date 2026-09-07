@@ -27,8 +27,8 @@
     <el-table v-loading="loading" :data="roleList" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="角色编号" prop="roleId" width="100" />
-      <el-table-column label="角色名称" prop="roleName" min-width="140" />
-      <el-table-column label="权限字符" prop="roleKey" min-width="140" />
+      <el-table-column label="角色名称" prop="roleName" min-width="140" show-overflow-tooltip />
+      <el-table-column label="权限字符" prop="roleKey" min-width="140" show-overflow-tooltip />
       <el-table-column label="显示顺序" prop="roleSort" width="100" align="center" />
       <el-table-column label="状态" width="90" align="center">
         <template #default="{ row }">

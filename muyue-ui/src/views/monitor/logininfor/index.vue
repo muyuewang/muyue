@@ -39,8 +39,8 @@
         </template>
       </el-table-column>
       <el-table-column label="描述" prop="msg" show-overflow-tooltip />
-      <el-table-column label="访问时间" prop="accessTime" width="180" />
-      <el-table-column label="操作" width="80" align="center">
+      <el-table-column label="访问时间" prop="accessTime" width="180" show-overflow-tooltip />
+      <el-table-column label="操作" width="110" align="center" fixed="right" class-name="op-column">
         <template #default="{ row }">
           <el-button link type="danger" :icon="Delete" v-hasPermi="['monitor:logininfor:remove']" @click="handleDelete(row)">删除</el-button>
         </template>

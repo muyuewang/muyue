@@ -251,6 +251,40 @@ html.dark .sidebar-container .el-menu-item.is-active {
   justify-content: center;
 }
 
+/* 收起态兜底：强制隐藏菜单文字，避免文字在窄容器中被裁切 */
+.sidebar-container.is-collapse .el-menu-item span,
+.sidebar-container.is-collapse .el-sub-menu__title span {
+  display: none !important;
+}
+
+/* 收起态对齐：菜单去内边距、条目占满整行居中，与 logo 徽标同一条中轴线 */
+.sidebar-container.is-collapse .sidebar-logo {
+  justify-content: center;
+  padding: 0;
+}
+
+.sidebar-container.is-collapse .el-menu {
+  padding: 6px 0 !important;
+}
+
+.sidebar-container.is-collapse .el-menu-item,
+.sidebar-container.is-collapse .el-sub-menu__title {
+  width: 100%;
+  min-width: 0;
+  padding: 0 !important;
+  justify-content: center;
+}
+
+.sidebar-container.is-collapse .el-menu-item .el-icon,
+.sidebar-container.is-collapse .el-sub-menu__title .el-icon {
+  margin-right: 0;
+}
+
+/* 表头单行，避免固定列与表体错位 */
+.el-table th.el-table__cell > .cell {
+  white-space: nowrap;
+}
+
 /* =========================================================
    顶栏
    ========================================================= */
@@ -393,6 +427,23 @@ html.dark .el-table th.el-table__cell {
   display: flex;
   justify-content: flex-end;
   margin-top: 16px;
+}
+
+/* 分页按钮统一圆角风格 */
+.el-pagination .el-pager li,
+.el-pagination .btn-prev,
+.el-pagination .btn-next {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.el-pagination .el-pager li.is-active {
+  border-radius: var(--radius-sm);
+}
+
+.el-pagination .el-select .el-input__wrapper,
+.el-pagination .el-input__wrapper {
+  border-radius: var(--radius-sm);
 }
 
 /* 表格操作列 */

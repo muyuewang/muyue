@@ -30,15 +30,15 @@
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       border
     >
-      <el-table-column label="菜单名称" prop="menuName" min-width="180" />
+      <el-table-column label="菜单名称" prop="menuName" min-width="180" show-overflow-tooltip />
       <el-table-column label="图标" width="70" align="center">
         <template #default="{ row }">
           <el-icon v-if="row.icon && row.icon !== '#'"><component :is="row.icon" /></el-icon>
         </template>
       </el-table-column>
       <el-table-column label="排序" prop="orderNum" width="70" align="center" />
-      <el-table-column label="权限标识" prop="perms" min-width="150" />
-      <el-table-column label="组件路径" prop="component" min-width="160" />
+      <el-table-column label="权限标识" prop="perms" min-width="150" show-overflow-tooltip />
+      <el-table-column label="组件路径" prop="component" min-width="160" show-overflow-tooltip />
       <el-table-column label="状态" width="90" align="center">
         <template #default="{ row }">
           <el-tag :type="row.status === '0' ? 'success' : 'danger'">{{ row.status === '0' ? '正常' : '停用' }}</el-tag>

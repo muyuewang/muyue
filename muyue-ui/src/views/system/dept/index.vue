@@ -30,11 +30,11 @@
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       border
     >
-      <el-table-column label="部门名称" prop="deptName" min-width="180" />
+      <el-table-column label="部门名称" prop="deptName" min-width="180" show-overflow-tooltip />
       <el-table-column label="排序" prop="orderNum" width="70" align="center" />
       <el-table-column label="负责人" prop="leader" width="100" />
       <el-table-column label="联系电话" prop="phone" width="130" />
-      <el-table-column label="邮箱" prop="email" min-width="160" />
+      <el-table-column label="邮箱" prop="email" min-width="160" show-overflow-tooltip />
       <el-table-column label="状态" width="90" align="center">
         <template #default="{ row }">
           <el-tag :type="row.status === '0' ? 'success' : 'danger'">{{ row.status === '0' ? '正常' : '停用' }}</el-tag>

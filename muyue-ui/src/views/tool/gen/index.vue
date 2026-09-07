@@ -19,13 +19,13 @@
     />
 
     <el-table :data="tableList" v-loading="loading" border class="page-container">
-      <el-table-column label="表名" prop="tableName" min-width="180" />
-      <el-table-column label="实体类名" prop="className" min-width="140" />
-      <el-table-column label="业务名" prop="businessName" min-width="120" />
+      <el-table-column label="表名" prop="tableName" min-width="180" show-overflow-tooltip />
+      <el-table-column label="实体类名" prop="className" min-width="140" show-overflow-tooltip />
+      <el-table-column label="业务名" prop="businessName" min-width="120" show-overflow-tooltip />
       <el-table-column label="字段数" width="90" align="center">
         <template #default="{ row }">{{ row.columns?.length || 0 }}</template>
       </el-table-column>
-      <el-table-column label="主键" min-width="120">
+      <el-table-column label="主键" min-width="120" show-overflow-tooltip>
         <template #default="{ row }">{{ row.pkColumn ? row.pkColumn.columnName : '-' }}</template>
       </el-table-column>
       <el-table-column label="操作" width="220" align="center">

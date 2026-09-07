@@ -82,9 +82,9 @@
     <div class="page-container" style="margin-bottom: 16px">
       <div class="section-title">磁盘状态</div>
       <el-table :data="server.sysFiles" border>
-        <el-table-column label="盘符路径" prop="dirName" min-width="160" />
-        <el-table-column label="文件系统" prop="sysTypeName" min-width="110" />
-        <el-table-column label="盘符类型" prop="typeName" min-width="110" />
+        <el-table-column label="盘符路径" prop="dirName" min-width="160" show-overflow-tooltip />
+        <el-table-column label="文件系统" prop="sysTypeName" min-width="110" show-overflow-tooltip />
+        <el-table-column label="盘符类型" prop="typeName" min-width="110" show-overflow-tooltip />
         <el-table-column label="总大小(GB)" prop="total" width="110" />
         <el-table-column label="可用(GB)" prop="free" width="110" />
         <el-table-column label="已用(GB)" prop="used" width="110" />
