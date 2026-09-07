@@ -58,11 +58,11 @@
       <el-table-column label="联系电话" prop="phone" width="130" />
       <el-table-column label="收货地址" prop="address" show-overflow-tooltip />
       <el-table-column label="下单时间" prop="createTime" width="180" />
-      <el-table-column label="操作" width="150" align="center" fixed="right" class-name="op-column">
+      <el-table-column label="操作" width="170" align="center" fixed="right" class-name="op-column">
         <template #default="{ row }">
           <el-button link type="primary" :icon="View" v-hasPermi="['order:order:query']" @click="handleDetail(row)">明细</el-button>
           <el-divider direction="vertical" />
-          <el-dropdown trigger="click" @command="(cmd) => handleAction(cmd, row)">
+          <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">
             <span class="op-more">
               更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
             </span>
@@ -324,7 +324,12 @@ function handleDelete(row) {
   })
 }
 
-function handleAction(command, row) {
+const moreRefs = ref([])
+function setMoreRef(el, index) { moreRefs.value[index] = el }
+function closeMore(index) { moreRefs.value[index]?.handleClose?.() }
+
+function handleAction(command, row, index) {
+  closeMore(index)
   if (command === 'edit') {
     handleUpdate(row)
   } else if (command === 'delete') {

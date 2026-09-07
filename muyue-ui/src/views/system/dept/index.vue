@@ -41,11 +41,11 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" width="170" />
-      <el-table-column label="操作" width="150" align="center" fixed="right" class-name="op-column">
+      <el-table-column label="操作" width="170" align="center" fixed="right" class-name="op-column">
         <template #default="{ row }">
           <el-button v-hasPermi="['system:dept:edit']" link type="primary" icon="Edit" @click="handleUpdate(row)">修改</el-button>
           <el-divider direction="vertical" />
-          <el-dropdown trigger="click" @command="(cmd) => handleAction(cmd, row)">
+          <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">
             <span class="op-more">
               更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
             </span>
@@ -264,7 +264,12 @@ function handleDelete(row) {
     })
 }
 
-function handleAction(command, row) {
+const moreRefs = ref([])
+function setMoreRef(el, index) { moreRefs.value[index] = el }
+function closeMore(index) { moreRefs.value[index]?.handleClose?.() }
+
+function handleAction(command, row, index) {
+  closeMore(index)
   if (command === 'add') {
     handleAdd(row)
   } else if (command === 'delete') {

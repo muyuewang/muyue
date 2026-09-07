@@ -34,11 +34,11 @@
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="remark" show-overflow-tooltip />
-        <el-table-column label="操作" width="150" align="center" class-name="op-column">
+        <el-table-column label="操作" width="170" align="center" class-name="op-column">
           <template #default="{ row }">
             <el-button link type="primary" :icon="Edit" v-hasPermi="['system:dict:edit']" @click.stop="handleTypeUpdate(row)">修改</el-button>
             <el-divider direction="vertical" />
-            <el-dropdown trigger="click" @command="(cmd) => handleTypeAction(cmd, row)">
+            <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleTypeAction(cmd, row, $index)">
               <span class="op-more">
                 更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
               </span>
@@ -246,7 +246,12 @@ function handleTypeDelete(row) {
     })
 }
 
-function handleTypeAction(command, row) {
+const moreRefs = ref([])
+function setMoreRef(el, index) { moreRefs.value[index] = el }
+function closeMore(index) { moreRefs.value[index]?.handleClose?.() }
+
+function handleTypeAction(command, row, index) {
+  closeMore(index)
   if (command === 'data') {
     openData(row)
   } else if (command === 'delete') {

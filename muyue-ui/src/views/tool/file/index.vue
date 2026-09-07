@@ -42,7 +42,7 @@
         <template #default="{ row }">
           <el-button link type="primary" :icon="View" @click="handlePreview(row)">预览</el-button>
           <el-divider direction="vertical" />
-          <el-dropdown trigger="click" @command="(cmd) => handleAction(cmd, row)">
+          <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">
             <span class="op-more">更多<el-icon class="el-icon--right"><ArrowDown /></el-icon></span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -184,7 +184,12 @@ function handleDelete(row) {
   })
 }
 
-function handleAction(command, row) {
+const moreRefs = ref([])
+function setMoreRef(el, index) { moreRefs.value[index] = el }
+function closeMore(index) { moreRefs.value[index]?.handleClose?.() }
+
+function handleAction(command, row, index) {
+  closeMore(index)
   if (command === 'download') {
     handleDownload(row)
   } else if (command === 'delete') {
