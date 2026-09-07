@@ -109,6 +109,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Role' })
 import { nextTick, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { addRole, changeRoleStatus, delRole, getRole, listRole, updateRole } from '@/api/system/role'

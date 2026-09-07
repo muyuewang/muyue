@@ -50,6 +50,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Gen' })
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Search, Refresh, View, Download } from '@element-plus/icons-vue'

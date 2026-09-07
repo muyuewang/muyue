@@ -67,6 +67,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Index' })
 import { computed } from 'vue'
 import useUserStore from '@/store/modules/user'
 

@@ -197,6 +197,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Order' })
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus, Delete, Edit, View } from '@element-plus/icons-vue'

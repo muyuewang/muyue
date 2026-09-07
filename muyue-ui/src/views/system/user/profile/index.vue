@@ -92,6 +92,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Profile' })
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { UserFilled } from '@element-plus/icons-vue'

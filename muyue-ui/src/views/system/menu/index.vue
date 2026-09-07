@@ -141,6 +141,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Menu' })
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { addMenu, delMenu, getMenu, listMenu, treeselect, updateMenu } from '@/api/system/menu'

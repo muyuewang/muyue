@@ -99,6 +99,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Server' })
 import { onMounted, onUnmounted, reactive, ref } from 'vue'
 import { Refresh } from '@element-plus/icons-vue'
 import { getServer } from '@/api/monitor/server'

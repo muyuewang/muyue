@@ -111,6 +111,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Operlog' })
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { cleanOperlog, delOperlog, listOperlog } from '@/api/monitor/operlog'

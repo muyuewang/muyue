@@ -60,6 +60,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Mail' })
 import { onBeforeUnmount, onMounted, reactive, ref, shallowRef } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'

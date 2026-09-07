@@ -117,6 +117,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Dept' })
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { addDept, delDept, deptTreeSelect, getDept, listDept, updateDept } from '@/api/system/dept'

@@ -170,6 +170,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'User' })
 import { onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { addUser, changeUserStatus, delUser, getUser, listUser, resetUserPwd, updateUser } from '@/api/system/user'

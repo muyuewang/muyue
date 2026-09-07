@@ -68,6 +68,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'File' })
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Upload, Delete, View } from '@element-plus/icons-vue'

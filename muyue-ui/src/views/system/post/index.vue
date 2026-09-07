@@ -80,6 +80,7 @@
 </template>
 
 <script setup>
+defineOptions({ name: 'Post' })
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus, Delete, Edit } from '@element-plus/icons-vue'

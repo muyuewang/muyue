@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: 后端构建 + 冒烟测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Build & Test (SQLite 冒烟)
+        working-directory: muyue-admin
+        run: mvn -B verify
+
+  vue-ui:
+    name: Vue 前端构建
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: muyue-ui/package-lock.json
+      - name: Install & Build
+        working-directory: muyue-ui
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+  react-ui:
+    name: React 前端构建
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: muyue-react-ui/package-lock.json
+      - name: Install & Build
+        working-directory: muyue-react-ui
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
