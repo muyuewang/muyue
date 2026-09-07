@@ -70,7 +70,7 @@
 <script setup>
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Refresh, Upload, Delete, View, ArrowDown } from '@element-plus/icons-vue'
+import { Search, Refresh, Upload, Delete, View } from '@element-plus/icons-vue'
 import { renderAsync } from 'docx-preview'
 import * as XLSX from 'xlsx'
 import { listFile, uploadFile, previewFile, downloadFile, delFile } from '@/api/tool/file'
