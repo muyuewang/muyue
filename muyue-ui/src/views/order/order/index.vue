@@ -326,7 +326,12 @@ function handleDelete(row) {
 
 const moreRefs = ref([])
 function setMoreRef(el, index) { moreRefs.value[index] = el }
-function closeMore(index) { moreRefs.value[index]?.handleClose?.() }
+function closeMore() {
+  // 兜底：隐藏所有 dropdown 弹出层（含因行 DOM 重建而失联的孤儿弹出层）
+  document.querySelectorAll('.el-dropdown__popper').forEach((el) => {
+    el.style.display = 'none'
+  })
+}
 
 function handleAction(command, row, index) {
   closeMore(index)
