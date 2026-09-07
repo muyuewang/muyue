@@ -8,8 +8,8 @@
 -- 1、部门表
 -- ----------------------------
 CREATE TABLE sys_dept (
-  dept_id     NUMBER(20)     NOT NULL,
-  parent_id   NUMBER(20)     DEFAULT 0,
+  dept_id     VARCHAR2(20)     NOT NULL,
+  parent_id   VARCHAR2(20)     DEFAULT 0,
   ancestors   VARCHAR2(500)  DEFAULT '',
   dept_name   VARCHAR2(30)   DEFAULT '',
   order_num   NUMBER(4)      DEFAULT 0,
@@ -41,8 +41,8 @@ COMMENT ON COLUMN sys_dept.del_flag IS '删除标志（0存在 2删除）';
 -- 2、用户表
 -- ----------------------------
 CREATE TABLE sys_user (
-  user_id     NUMBER(20)     NOT NULL,
-  dept_id     NUMBER(20),
+  user_id     VARCHAR2(20)     NOT NULL,
+  dept_id     VARCHAR2(20),
   user_name   VARCHAR2(30)   NOT NULL,
   nick_name   VARCHAR2(30)   DEFAULT '',
   user_type   VARCHAR2(2)    DEFAULT '00',
@@ -85,7 +85,7 @@ CREATE INDEX idx_sys_user_name ON sys_user (user_name);
 -- 3、角色表
 -- ----------------------------
 CREATE TABLE sys_role (
-  role_id            NUMBER(20)   NOT NULL,
+  role_id            VARCHAR2(20)   NOT NULL,
   role_name          VARCHAR2(30) NOT NULL,
   role_key           VARCHAR2(100) NOT NULL,
   role_sort          NUMBER(4)    DEFAULT 0,
@@ -114,8 +114,8 @@ COMMENT ON COLUMN sys_role.del_flag IS '删除标志（0存在 2删除）';
 -- 4、用户角色关联表
 -- ----------------------------
 CREATE TABLE sys_user_role (
-  user_id NUMBER(20) NOT NULL,
-  role_id NUMBER(20) NOT NULL,
+  user_id VARCHAR2(20) NOT NULL,
+  role_id VARCHAR2(20) NOT NULL,
   PRIMARY KEY (user_id, role_id)
 );
 COMMENT ON TABLE  sys_user_role IS '用户与角色关联表';
@@ -126,9 +126,9 @@ COMMENT ON COLUMN sys_user_role.role_id IS '角色ID';
 -- 5、菜单权限表
 -- ----------------------------
 CREATE TABLE sys_menu (
-  menu_id    NUMBER(20)     NOT NULL,
+  menu_id    VARCHAR2(20)     NOT NULL,
   menu_name  VARCHAR2(50)   NOT NULL,
-  parent_id  NUMBER(20)     DEFAULT 0,
+  parent_id  VARCHAR2(20)     DEFAULT 0,
   order_num  NUMBER(4)      DEFAULT 0,
   path       VARCHAR2(200)  DEFAULT '',
   component  VARCHAR2(255),
@@ -167,8 +167,8 @@ COMMENT ON COLUMN sys_menu.icon IS '菜单图标';
 -- 6、角色菜单关联表
 -- ----------------------------
 CREATE TABLE sys_role_menu (
-  role_id NUMBER(20) NOT NULL,
-  menu_id NUMBER(20) NOT NULL,
+  role_id VARCHAR2(20) NOT NULL,
+  menu_id VARCHAR2(20) NOT NULL,
   PRIMARY KEY (role_id, menu_id)
 );
 COMMENT ON TABLE  sys_role_menu IS '角色与菜单关联表';
@@ -179,7 +179,7 @@ COMMENT ON COLUMN sys_role_menu.menu_id IS '菜单ID';
 -- 订单主表
 -- ----------------------------
 CREATE TABLE biz_order (
-  order_id     NUMBER(20)     NOT NULL,
+  order_id     VARCHAR2(20)     NOT NULL,
   order_no     VARCHAR2(50)   DEFAULT '',
   user_name    VARCHAR2(64)   DEFAULT '',
   total_amount NUMBER(12, 2)  DEFAULT 0,
@@ -209,8 +209,8 @@ COMMENT ON COLUMN biz_order.address IS '收货地址';
 -- 订单明细表
 -- ----------------------------
 CREATE TABLE biz_order_item (
-  item_id      NUMBER(20)     NOT NULL,
-  order_id     NUMBER(20)     NOT NULL,
+  item_id      VARCHAR2(20)     NOT NULL,
+  order_id     VARCHAR2(20)     NOT NULL,
   product_name VARCHAR2(128)  DEFAULT '',
   price        NUMBER(12, 2)  DEFAULT 0,
   quantity     NUMBER(6)      DEFAULT 1,
@@ -228,7 +228,7 @@ COMMENT ON COLUMN biz_order_item.total_price IS '小计金额';
 -- 通知公告表
 -- ----------------------------
 CREATE TABLE sys_notice (
-  notice_id      NUMBER(20)     NOT NULL,
+  notice_id      VARCHAR2(20)     NOT NULL,
   notice_title   VARCHAR2(100)  DEFAULT '',
   notice_type    CHAR(1)        DEFAULT '1',
   notice_content CLOB,
@@ -250,8 +250,8 @@ COMMENT ON COLUMN sys_notice.status IS '公告状态（0正常 1关闭）';
 -- 公告已读记录表
 -- ----------------------------
 CREATE TABLE sys_notice_read (
-  user_id   NUMBER(20)   NOT NULL,
-  notice_id NUMBER(20)   NOT NULL,
+  user_id   VARCHAR2(20)   NOT NULL,
+  notice_id VARCHAR2(20)   NOT NULL,
   read_time TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, notice_id)
 );
@@ -261,7 +261,7 @@ COMMENT ON TABLE sys_notice_read IS '公告已读记录表';
 -- 邮箱配置表（单行）
 -- ----------------------------
 CREATE TABLE sys_mail_config (
-  config_id   NUMBER(20)    NOT NULL,
+  config_id   VARCHAR2(20)    NOT NULL,
   host        VARCHAR2(128) DEFAULT '',
   port        NUMBER(6)     DEFAULT 465,
   username    VARCHAR2(128) DEFAULT '',
@@ -279,7 +279,7 @@ COMMENT ON TABLE sys_mail_config IS '邮箱发送配置表';
 -- 附件表
 -- ----------------------------
 CREATE TABLE sys_file (
-  file_id    NUMBER(20)    NOT NULL,
+  file_id    VARCHAR2(20)    NOT NULL,
   file_name  VARCHAR2(255) DEFAULT '',
   file_path  VARCHAR2(500) DEFAULT '',
   file_size  NUMBER(20)    DEFAULT 0,

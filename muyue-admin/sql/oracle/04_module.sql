@@ -20,7 +20,7 @@ END;
 -- 岗位表
 -- ----------------------------
 CREATE TABLE sys_post (
-  post_id     NUMBER(20) PRIMARY KEY,
+  post_id     VARCHAR2(20) PRIMARY KEY,
   post_code   VARCHAR2(64)  NOT NULL,
   post_name   VARCHAR2(50)  NOT NULL,
   post_sort   NUMBER(4)     DEFAULT 0,
@@ -36,8 +36,8 @@ CREATE TABLE sys_post (
 -- 用户岗位关联表
 -- ----------------------------
 CREATE TABLE sys_user_post (
-  user_id NUMBER(20) NOT NULL,
-  post_id NUMBER(20) NOT NULL,
+  user_id VARCHAR2(20) NOT NULL,
+  post_id VARCHAR2(20) NOT NULL,
   CONSTRAINT pk_sys_user_post PRIMARY KEY (user_id, post_id)
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE sys_user_post (
 -- 字典类型表
 -- ----------------------------
 CREATE TABLE sys_dict_type (
-  dict_id     NUMBER(20) PRIMARY KEY,
+  dict_id     VARCHAR2(20) PRIMARY KEY,
   dict_name   VARCHAR2(100) NOT NULL,
   dict_type   VARCHAR2(100) NOT NULL,
   status      CHAR(1)       DEFAULT '0',
@@ -61,7 +61,7 @@ CREATE INDEX idx_sys_dict_type ON sys_dict_type (dict_type);
 -- 字典数据表
 -- ----------------------------
 CREATE TABLE sys_dict_data (
-  dict_code   NUMBER(20) PRIMARY KEY,
+  dict_code   VARCHAR2(20) PRIMARY KEY,
   dict_sort   NUMBER(4)     DEFAULT 0,
   dict_label  VARCHAR2(100) NOT NULL,
   dict_value  VARCHAR2(100) NOT NULL,
@@ -82,7 +82,7 @@ CREATE INDEX idx_sys_dict_data ON sys_dict_data (dict_type);
 -- 登录日志表
 -- ----------------------------
 CREATE TABLE sys_logininfor (
-  info_id     NUMBER(20) PRIMARY KEY,
+  info_id     VARCHAR2(20) PRIMARY KEY,
   user_name   VARCHAR2(50)  DEFAULT '',
   ipaddr      VARCHAR2(128) DEFAULT '',
   status      CHAR(1)       DEFAULT '0',

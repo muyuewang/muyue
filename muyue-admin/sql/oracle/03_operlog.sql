@@ -14,7 +14,7 @@ BEGIN
   IF v_count = 0 THEN
     EXECUTE IMMEDIATE '
       CREATE TABLE sys_oper_log (
-        oper_id        NUMBER(20)    NOT NULL,
+        oper_id        VARCHAR2(20)    NOT NULL,
         title          VARCHAR2(100) DEFAULT '''',
         business_type  NUMBER(2)     DEFAULT 0,
         method         VARCHAR2(200) DEFAULT '''',
