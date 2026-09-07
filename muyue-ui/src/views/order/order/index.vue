@@ -63,9 +63,9 @@
           <el-button link type="primary" :icon="View" v-hasPermi="['order:order:query']" @click="handleDetail(row)">明细</el-button>
           <el-divider direction="vertical" />
           <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">
-            <span class="op-more">
-              更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
-            </span>
+            <el-button link type="primary">
+                更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
+              </el-button>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="edit" icon="Edit" v-hasPermi="['order:order:edit']">修改订单</el-dropdown-item>

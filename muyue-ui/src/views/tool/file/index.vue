@@ -43,7 +43,9 @@
           <el-button link type="primary" :icon="View" @click="handlePreview(row)">预览</el-button>
           <el-divider direction="vertical" />
           <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">
-            <span class="op-more">更多<el-icon class="el-icon--right"><ArrowDown /></el-icon></span>
+            <el-button link type="primary">
+                更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
+              </el-button>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="download" icon="Download">下载</el-dropdown-item>

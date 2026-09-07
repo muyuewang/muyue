@@ -448,10 +448,10 @@ html.dark .el-table th.el-table__cell {
 
 /* 表格操作列 */
 .op-column .cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
 }
 
 /* 表格内按钮禁止内部换行（防图标/文字竖排） */
