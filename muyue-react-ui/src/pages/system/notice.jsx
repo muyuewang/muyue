@@ -6,10 +6,11 @@ import {
   ModalForm,
   ProFormText,
   ProFormTextArea,
-  ProFormRadio
+  ProFormRadio,
+  ProFormSelect
 } from '@ant-design/pro-components'
-import { App, Button, Descriptions, Modal, Popconfirm, Space, Tag } from 'antd'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { App, Button, Descriptions, Modal, Popconfirm, Space, Tag, Typography } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import {
   listNotice,
   getNotice,
@@ -17,7 +18,9 @@ import {
   updateNotice,
   delNotice
 } from '../../api/notice'
+import { notifyUnread } from '../../utils/noticeBus'
 
+const { Text } = Typography
 const typeMap = { 1: { label: '通知', color: 'warning' }, 2: { label: '公告', color: 'success' } }
 
 export default function SystemNotice() {
@@ -26,8 +29,57 @@ export default function SystemNotice() {
   const [formOpen, setFormOpen] = useState(false)
   const [editRow, setEditRow] = useState(null)
 
+  const openDetail = (row) => {
+    getNotice(row.noticeId).then((res) => {
+      const notice = res.data
+      modal.info({
+        title: notice.noticeTitle,
+        width: 680,
+        content: (
+          <div>
+            <Descriptions column={2} size="small" style={{ marginTop: 16 }}>
+              <Descriptions.Item label="类型">
+                <Tag color={typeMap[notice.noticeType]?.color}>
+                  {typeMap[notice.noticeType]?.label}
+                </Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="发布时间">{notice.createTime}</Descriptions.Item>
+              <Descriptions.Item label="发布人">{notice.createBy}</Descriptions.Item>
+              <Descriptions.Item label="状态">
+                {notice.status === '0' ? '正常' : '已关闭'}
+              </Descriptions.Item>
+            </Descriptions>
+            <div
+              style={{
+                marginTop: 16,
+                padding: 16,
+                background: '#f7f8fa',
+                borderRadius: 8,
+                whiteSpace: 'pre-wrap',
+                lineHeight: 1.8,
+                minHeight: 120
+              }}
+            >
+              {notice.noticeContent}
+            </div>
+          </div>
+        )
+      })
+      // 后端"查看即标记已读"：刷新列表中的已读状态 + 立即联动铃铛角标
+      actionRef.current?.reload()
+      notifyUnread()
+    })
+  }
+
+  const handleDelete = (ids) => {
+    delNotice(ids.join(',')).then(() => {
+      message.success('删除成功')
+      actionRef.current?.reload()
+      notifyUnread()
+    })
+  }
+
   const columns = [
-    { title: '编号', dataIndex: 'noticeId', width: 80 },
     {
       title: '类型',
       dataIndex: 'noticeType',
@@ -35,19 +87,37 @@ export default function SystemNotice() {
       align: 'center',
       render: (v) => <Tag color={typeMap[v]?.color}>{typeMap[v]?.label || v}</Tag>
     },
-    { title: '标题', dataIndex: 'noticeTitle', ellipsis: true },
+    {
+      title: '标题',
+      dataIndex: 'noticeTitle',
+      ellipsis: true,
+      render: (v, row) => (
+        <Space>
+          {row.is_read === 0 && <Badge />}
+          <Text strong={row.is_read === 0}>{v}</Text>
+        </Space>
+      )
+    },
+    {
+      title: '已读状态',
+      dataIndex: 'is_read',
+      width: 100,
+      align: 'center',
+      render: (v) =>
+        v === 0 ? <Tag color="error">未读</Tag> : <Tag color="default">已读</Tag>
+    },
     { title: '发布人', dataIndex: 'createBy', width: 110 },
     { title: '发布时间', dataIndex: 'createTime', width: 170 },
     {
       title: '操作',
-      width: 160,
+      width: 150,
       render: (_, row) => (
         <Space>
-          <a onClick={() => handleView(row)}>详情</a>
+          <a onClick={() => openDetail(row)}>{row.is_read === 0 ? '阅读' : '详情'}</a>
           <a
             onClick={() => {
-              setFormOpen(true)
               setEditRow(row)
+              setFormOpen(true)
             }}
           >
             修改
@@ -60,38 +130,6 @@ export default function SystemNotice() {
     }
   ]
 
-  const handleView = (row) => {
-    getNotice(row.noticeId).then((res) => {
-      setView(res.data)
-      modal.info({
-        title: res.data.noticeTitle,
-        width: 640,
-        content: (
-          <div>
-            <Descriptions column={2} size="small" style={{ marginTop: 16 }}>
-              <Descriptions.Item label="类型">
-                <Tag color={typeMap[res.data.noticeType]?.color}>
-                  {typeMap[res.data.noticeType]?.label}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="发布时间">{res.data.createTime}</Descriptions.Item>
-            </Descriptions>
-            <div style={{ marginTop: 16, whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>
-              {res.data.noticeContent}
-            </div>
-          </div>
-        )
-      })
-    })
-  }
-
-  const handleDelete = (ids) => {
-    delNotice(ids.join(',')).then(() => {
-      message.success('删除成功')
-      actionRef.current?.reload()
-    })
-  }
-
   return (
     <PageContainer>
       <ProTable
@@ -99,7 +137,7 @@ export default function SystemNotice() {
         actionRef={actionRef}
         columns={columns}
         cardBordered
-        search={false}
+        search={{ labelWidth: 'auto' }}
         pagination={{ defaultPageSize: 10 }}
         request={async (params) => {
           const { current, pageSize, ...rest } = params
@@ -125,11 +163,17 @@ export default function SystemNotice() {
         editRow={editRow}
         open={formOpen}
         setOpen={setFormOpen}
-        onDone={() => actionRef.current?.reload()}
+        onDone={() => {
+          actionRef.current?.reload()
+          notifyUnread()
+        }}
       />
-
     </PageContainer>
   )
+}
+
+function Badge() {
+  return <span style={{ width: 8, height: 8, background: '#ff4d4f', borderRadius: '50%', display: 'inline-block' }} />
 }
 
 function NoticeForm({ open, setOpen, editRow, onDone }) {

@@ -33,15 +33,21 @@ function toTableTree(nodes) {
 export default function SystemDept() {
   const { message } = App.useApp()
   const [rows, setRows] = useState([])
+  const [expandedKeys, setExpandedKeys] = useState([])
   const [loading, setLoading] = useState(true)
   const [formOpen, setFormOpen] = useState(false)
   const [editRow, setEditRow] = useState(null)
   const [treeData, setTreeData] = useState([])
 
+  const collectKeys = (nodes) =>
+    (nodes || []).flatMap((n) => (n.children && n.children.length ? [n.key, ...collectKeys(n.children)] : []))
+
   const load = () => {
     setLoading(true)
     listDept().then((res) => {
-      setRows(toTableTree(res.data))
+      const tree = toTableTree(res.data)
+      setRows(tree)
+      setExpandedKeys(collectKeys(tree))
       setLoading(false)
     })
   }
@@ -97,6 +103,8 @@ export default function SystemDept() {
         dataSource={rows}
         loading={loading}
         pagination={false}
+        expandedKeys={expandedKeys}
+        onExpandedRowsChange={setExpandedKeys}
       />
 
       <ModalForm

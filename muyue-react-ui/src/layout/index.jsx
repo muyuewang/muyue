@@ -10,6 +10,7 @@ import {
   ReloadOutlined
 } from '@ant-design/icons'
 import { getInfo, listNotice, logout, unreadCount } from '../api/auth'
+import { subscribeUnread } from '../utils/noticeBus'
 import { removeToken } from '../utils/request'
 
 const { Text } = Typography
@@ -66,7 +67,12 @@ function NoticeBell({ navigate }) {
   useEffect(() => {
     load()
     timer.current = setInterval(load, 60000)
-    return () => clearInterval(timer.current)
+    // 公告页读完/发布/删除时即时联动
+    const unsub = subscribeUnread(load)
+    return () => {
+      clearInterval(timer.current)
+      unsub()
+    }
   }, [])
 
   const content = (
