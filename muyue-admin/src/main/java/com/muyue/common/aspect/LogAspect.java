@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -102,7 +103,12 @@ public class LogAspect {
         if (e != null) {
             operLog.setErrorMsg(substring(e.getMessage(), MAX_LENGTH));
         }
-        operLogService.insertOperlog(operLog);
+        // 采集完成后异步落库，避免日志写入拖慢业务接口响应
+        CompletableFuture.runAsync(() -> operLogService.insertOperlog(operLog))
+                .exceptionally(ex -> {
+                    log.warn("异步保存操作日志失败：{}", ex.getMessage());
+                    return null;
+                });
     }
 
     /**

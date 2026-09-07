@@ -5,11 +5,12 @@
 spring:
   datasource:
     driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:./data/muyue.db
+    # WAL 模式支持并发读；busy_timeout 使写冲突等待而非直接报 SQLITE_BUSY
+    url: jdbc:sqlite:./data/muyue.db?journal_mode=WAL&busy_timeout=5000
     hikari:
       connection-test-query: SELECT 1
-      # SQLite 为文件库，单连接可避免 SQLITE_BUSY
-      maximum-pool-size: 1
+      # WAL + busy_timeout 下可安全使用少量多连接（读并发不再互相阻塞）
+      maximum-pool-size: 4
       minimum-idle: 1
   sql:
     init:
