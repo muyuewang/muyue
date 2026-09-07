@@ -17,7 +17,17 @@ export default defineConfig(({ mode }) => {
       }
     },
     build: {
-      chunkSizeWarningLimit: 4096
+      chunkSizeWarningLimit: 1024,
+      rollupOptions: {
+        output: {
+          // vendor 分包：框架 / antd / Pro组件 各自独立，页面改动不影响其缓存
+          manualChunks: {
+            react: ['react', 'react-dom', 'react-router-dom'],
+            antd: ['antd', '@ant-design/icons'],
+            pro: ['@ant-design/pro-components']
+          }
+        }
+      }
     }
   }
 })

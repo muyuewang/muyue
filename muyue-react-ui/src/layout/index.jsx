@@ -7,30 +7,51 @@ import {
   UserOutlined,
   LogoutOutlined,
   SettingOutlined,
-  ReloadOutlined
+  ReloadOutlined,
+  ShoppingCartOutlined,
+  BankOutlined,
+  FileTextOutlined,
+  LinkOutlined,
+  HddOutlined,
+  MenuOutlined,
+  AppstoreOutlined,
+  BarsOutlined,
+  ToolOutlined,
+  DesktopOutlined,
+  FormOutlined,
+  MessageOutlined,
+  MailOutlined,
+  BarChartOutlined,
+  DashboardOutlined,
+  FundOutlined,
+  FolderOutlined,
+  HomeOutlined,
+  IdcardOutlined,
+  FolderOpenOutlined,
+  TeamOutlined
 } from '@ant-design/icons'
 import { getInfo, listNotice, logout, unreadCount } from '../api/auth'
 import { subscribeUnread } from '../utils/noticeBus'
+import ErrorBoundary from '../components/ErrorBoundary'
 import { removeToken } from '../utils/request'
 
 const { Text } = Typography
 
-/** 后端 Element 图标名 → antd 图标 */
-import * as Icons from '@ant-design/icons'
+/** 后端 Element 图标名 → antd 图标（显式按名导入，避免全量引入 ~800 个图标） */
 const iconAlias = {
-  User: 'UserOutlined', UserFilled: 'UserOutlined', ShoppingCart: 'ShoppingCartOutlined',
-  Bell: 'BellOutlined', OfficeBuilding: 'BankOutlined', Document: 'FileTextOutlined',
-  Connection: 'LinkOutlined', Cpu: 'HddOutlined', Setting: 'SettingOutlined',
-  Menu: 'MenuOutlined', Collection: 'AppstoreOutlined', List: 'BarsOutlined',
-  MagicStick: 'ToolOutlined', Monitor: 'DesktopOutlined', Edit: 'EditOutlined',
-  EditPen: 'FormOutlined', Message: 'MessageOutlined', Email: 'MailOutlined',
-  Download: 'DownloadOutlined', Upload: 'UploadOutlined', Chart: 'BarChartOutlined',
-  Dashboard: 'DashboardOutlined', Tree: 'ClusterOutlined', DataBoard: 'FundOutlined'
+  User: UserOutlined, UserFilled: TeamOutlined, ShoppingCart: ShoppingCartOutlined,
+  Bell: BellOutlined, OfficeBuilding: BankOutlined, Document: FileTextOutlined,
+  Connection: LinkOutlined, Cpu: HddOutlined, Setting: SettingOutlined,
+  Menu: MenuOutlined, Collection: AppstoreOutlined, List: BarsOutlined,
+  MagicStick: ToolOutlined, Monitor: DesktopOutlined, Edit: FormOutlined,
+  EditPen: FormOutlined, Message: MessageOutlined, Email: MailOutlined,
+  Download: MailOutlined, Upload: MailOutlined, Chart: BarChartOutlined,
+  Dashboard: DashboardOutlined, Tree: FundOutlined, DataBoard: FundOutlined,
+  Postcard: IdcardOutlined, FolderOpened: FolderOpenOutlined
 }
 function menuIcon(name) {
-  const compName = iconAlias[name] || 'FolderOutlined'
-  const Comp = Icons[compName]
-  return Comp ? <Comp /> : <Icons.FolderOutlined />
+  const Comp = iconAlias[name] || FolderOutlined
+  return Comp ? <Comp /> : <FolderOutlined />
 }
 
 /** 后端路由树 → ProLayout 菜单数据（子路径拼父前缀，ProLayout 认 path 字段） */
@@ -189,7 +210,10 @@ export default function Layout({ menus }) {
         <NoticeBell key="bell" navigate={navigate} />
       ]}
     >
-      <Outlet />
+      {/* 页面级错误边界：切路由自动重置，避免单页崩溃拖垮整个框架 */}
+      <ErrorBoundary resetKey={location.pathname}>
+        <Outlet />
+      </ErrorBoundary>
     </ProLayout>
   )
 }

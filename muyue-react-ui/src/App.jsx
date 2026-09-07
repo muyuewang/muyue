@@ -1,28 +1,39 @@
-import React, { useEffect, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Spin } from 'antd'
 import { getToken } from './utils/request'
 import { getRouters } from './api/auth'
 import Layout from './layout'
-import Login from './pages/login'
-import Home from './pages/home'
-import SystemUser from './pages/system/user'
-import SystemRole from './pages/system/role'
-import SystemMenu from './pages/system/menu'
-import SystemDept from './pages/system/dept'
-import SystemPost from './pages/system/post'
-import SystemDict from './pages/system/dict'
-import SystemNotice from './pages/system/notice'
-import OrderOrder from './pages/order/order'
-import MonitorOperlog from './pages/monitor/operlog'
-import MonitorLogininfor from './pages/monitor/logininfor'
-import MonitorOnline from './pages/monitor/online'
-import MonitorServer from './pages/monitor/server'
-import ToolGen from './pages/tool/gen'
-import ToolMail from './pages/tool/mail'
-import ToolFile from './pages/tool/file'
-import Profile from './pages/profile'
-import Screen from './pages/screen'
-import Placeholder from './pages/placeholder'
+
+// 路由级代码分割：每个页面独立 chunk，首屏只加载当前页
+const Login = lazy(() => import('./pages/login'))
+const Home = lazy(() => import('./pages/home'))
+const SystemUser = lazy(() => import('./pages/system/user'))
+const SystemRole = lazy(() => import('./pages/system/role'))
+const SystemMenu = lazy(() => import('./pages/system/menu'))
+const SystemDept = lazy(() => import('./pages/system/dept'))
+const SystemPost = lazy(() => import('./pages/system/post'))
+const SystemDict = lazy(() => import('./pages/system/dict'))
+const SystemNotice = lazy(() => import('./pages/system/notice'))
+const OrderOrder = lazy(() => import('./pages/order/order'))
+const MonitorOperlog = lazy(() => import('./pages/monitor/operlog'))
+const MonitorLogininfor = lazy(() => import('./pages/monitor/logininfor'))
+const MonitorOnline = lazy(() => import('./pages/monitor/online'))
+const MonitorServer = lazy(() => import('./pages/monitor/server'))
+const ToolGen = lazy(() => import('./pages/tool/gen'))
+const ToolMail = lazy(() => import('./pages/tool/mail'))
+const ToolFile = lazy(() => import('./pages/tool/file'))
+const Profile = lazy(() => import('./pages/profile'))
+const Screen = lazy(() => import('./pages/screen'))
+const Placeholder = lazy(() => import('./pages/placeholder'))
+
+function PageLoading() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300 }}>
+      <Spin size="large" tip="加载中..." />
+    </div>
+  )
+}
 
 /**
  * 组件注册表：key 为后端菜单的 component 字段
@@ -82,21 +93,23 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Layout menus={menus} />}>
-          {/* 首页是静态路由（后端不下发），固定为 /index */}
-          <Route path="index" element={<Home />} />
-          <Route path="user/profile" element={<Profile />} />
-          <Route index element={<Navigate to="/index" replace />} />
-          {(menus || []).length > 0 &&
-            flattenRouters(menus).map((r) => {
-              const Comp = componentMap[r.component] || Placeholder
-              return <Route key={r.path} path={r.path} element={<Comp />} />
-            })}
-          <Route path="*" element={<Placeholder />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<PageLoading />}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Layout menus={menus} />}>
+            {/* 首页是静态路由（后端不下发），固定为 /index */}
+            <Route path="index" element={<Home />} />
+            <Route path="user/profile" element={<Profile />} />
+            <Route index element={<Navigate to="/index" replace />} />
+            {(menus || []).length > 0 &&
+              flattenRouters(menus).map((r) => {
+                const Comp = componentMap[r.component] || Placeholder
+                return <Route key={r.path} path={r.path} element={<Comp />} />
+              })}
+            <Route path="*" element={<Placeholder />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }
