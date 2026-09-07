@@ -28,7 +28,7 @@
       <el-table-column label="主键" min-width="120" show-overflow-tooltip>
         <template #default="{ row }">{{ row.pkColumn ? row.pkColumn.columnName : '-' }}</template>
       </el-table-column>
-      <el-table-column label="操作" width="220" align="center">
+      <el-table-column label="操作" width="220" align="center" class-name="op-column">
         <template #default="{ row }">
           <el-button link type="primary" :icon="View" v-hasPermi="['tool:gen:query']" @click="handlePreview(row)">预览</el-button>
           <el-button link type="primary" :icon="Download" v-hasPermi="['tool:gen:code']" @click="handleDownload(row)">下载代码</el-button>

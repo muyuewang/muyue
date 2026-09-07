@@ -40,7 +40,7 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" width="180" />
-      <el-table-column label="操作" width="180" align="center">
+      <el-table-column label="操作" width="180" align="center" class-name="op-column">
         <template #default="{ row }">
           <el-button link type="primary" :icon="Edit" v-hasPermi="['system:post:edit']" @click="handleUpdate(row)">修改</el-button>
           <el-button link type="primary" :icon="Delete" v-hasPermi="['system:post:remove']" @click="handleDelete(row)">删除</el-button>

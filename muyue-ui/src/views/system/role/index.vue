@@ -36,7 +36,7 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" width="170" />
-      <el-table-column label="操作" width="180" fixed="right">
+      <el-table-column label="操作" width="180" align="center" fixed="right" class-name="op-column">
         <template #default="{ row }">
           <el-button v-hasPermi="['system:role:edit']" link type="primary" icon="Edit" @click="handleUpdate(row)">修改</el-button>
           <el-button v-hasPermi="['system:role:remove']" link type="danger" icon="Delete" @click="handleDelete(row)">删除</el-button>

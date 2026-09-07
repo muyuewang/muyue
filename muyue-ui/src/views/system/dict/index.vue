@@ -90,7 +90,7 @@
             <el-tag :type="row.status === '0' ? 'success' : 'danger'">{{ row.status === '0' ? '正常' : '停用' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150" align="center">
+        <el-table-column label="操作" width="150" align="center" class-name="op-column">
           <template #default="{ row }">
             <el-button link type="primary" :icon="Edit" v-hasPermi="['system:dict:edit']" @click="handleDataUpdate(row)">修改</el-button>
             <el-button link type="danger" :icon="Delete" v-hasPermi="['system:dict:remove']" @click="handleDataDelete(row)">删除</el-button>

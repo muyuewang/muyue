@@ -454,6 +454,11 @@ html.dark .el-table th.el-table__cell {
   white-space: nowrap;
 }
 
+/* 表格内按钮禁止内部换行（防图标/文字竖排） */
+.el-table .cell .el-button {
+  white-space: nowrap;
+}
+
 .op-column .el-button {
   margin-left: 0;
 }
