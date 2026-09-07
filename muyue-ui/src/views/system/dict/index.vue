@@ -39,9 +39,7 @@
             <el-button link type="primary" :icon="Edit" v-hasPermi="['system:dict:edit']" @click.stop="handleTypeUpdate(row)">修改</el-button>
             <el-divider direction="vertical" />
             <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleTypeAction(cmd, row, $index)">
-              <el-button link type="primary">
-                更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
-              </el-button>
+              <el-button link type="primary" class="op-more-trigger">更多</el-button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item command="data" icon="DataLine">字典数据</el-dropdown-item>

@@ -459,6 +459,17 @@ html.dark .el-table th.el-table__cell {
   white-space: nowrap;
 }
 
+/* “更多”下拉箭头：CSS 三角形，颜色跟随文字（亮/暗自适应） */
+.op-more-trigger::after {
+  content: '';
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: middle;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+}
+
 .op-column .el-button {
   margin-left: 0;
 }

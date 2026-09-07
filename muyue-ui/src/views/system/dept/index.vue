@@ -46,9 +46,7 @@
           <el-button v-hasPermi="['system:dept:edit']" link type="primary" icon="Edit" @click="handleUpdate(row)">修改</el-button>
           <el-divider direction="vertical" />
           <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">
-            <el-button link type="primary">
-                更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
-              </el-button>
+            <el-button link type="primary" class="op-more-trigger">更多</el-button>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="add" icon="Plus" v-hasPermi="['system:dept:add']">新增下级部门</el-dropdown-item>

@@ -56,9 +56,7 @@
           <el-button link type="primary" :icon="View" v-hasPermi="['system:notice:query']" @click="handleView(row)">详情</el-button>
           <el-divider direction="vertical" />
           <el-dropdown :ref="el => setMoreRef(el, $index)" trigger="click" @command="(cmd) => handleAction(cmd, row, $index)">
-            <el-button link type="primary">
-                更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
-              </el-button>
+            <el-button link type="primary" class="op-more-trigger">更多</el-button>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="edit" icon="Edit" v-hasPermi="['system:notice:edit']">修改公告</el-dropdown-item>
