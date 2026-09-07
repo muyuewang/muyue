@@ -259,10 +259,10 @@ UPDATE sys_menu SET parent_id = 0, order_num = 3 WHERE menu_id = 113;
 -- 普通角色更名为普通用户
 UPDATE sys_role SET role_name = '普通用户' WHERE role_id = 2;
 
--- 兼容存量库：品牌更名 牧曰 → 沐月
-UPDATE sys_dept SET dept_name = '沐月科技' WHERE dept_id = 100 AND dept_name = '牧曰科技';
-UPDATE sys_dept SET leader = '沐月' WHERE leader = '牧曰';
-UPDATE sys_user SET nick_name = '沐月' WHERE nick_name = '牧曰';
+-- 兼容存量库：品牌更名 沐月 → 沐月
+UPDATE sys_dept SET dept_name = '沐月科技' WHERE dept_id = 100 AND dept_name = '沐月科技';
+UPDATE sys_dept SET leader = '沐月' WHERE leader = '沐月';
+UPDATE sys_user SET nick_name = '沐月' WHERE nick_name = '沐月';
 
 -- ----------------------------
 -- 通知公告菜单（一级菜单，普通用户可查看）

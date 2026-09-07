@@ -15,7 +15,7 @@
     <artifactId>muyue-admin</artifactId>
     <version>1.0.0</version>
     <name>muyue-admin</name>
-    <description>牧曰后台管理脚手架 - 服务端</description>
+    <description>沐月后台管理脚手架 - 服务端</description>
 
     <properties>
         <java.version>21</java.version>
