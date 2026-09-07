@@ -24,9 +24,13 @@
           <el-button type="danger" plain :icon="Delete" :disabled="!typeSelected.length" v-hasPermi="['system:dict:remove']" @click="handleTypeDelete">删除</el-button>
         </el-col>
       </el-row>
-      <el-table :data="typeList" v-loading="typeLoading" border height="calc(100vh - 280px)" @selection-change="handleTypeSelect" @row-click="handleRowClick" class="page-container">
+      <el-table :data="typeList" v-loading="typeLoading" border height="calc(100vh - 280px)" @selection-change="handleTypeSelect" class="page-container">
         <el-table-column type="selection" width="45" align="center" />
-        <el-table-column label="字典名称" prop="dictName" min-width="120" show-overflow-tooltip />
+        <el-table-column label="字典名称" min-width="120" show-overflow-tooltip>
+          <template #default="{ row }">
+            <el-link type="primary" @click="handleRowClick(row)">{{ row.dictName }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column label="字典类型" prop="dictType" min-width="140" show-overflow-tooltip />
         <el-table-column label="状态" width="80" align="center">
           <template #default="{ row }">
