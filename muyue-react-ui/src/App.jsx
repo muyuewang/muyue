@@ -47,10 +47,14 @@ const componentMap = {
   'screen/jump': Screen
 }
 
-/** 把后端路由树打平成 { path, component, title } 列表 */
+/** 把后端路由树打平成 { path, component, title } 列表（无名 Layout 壳直接拆开） */
 export function flattenRouters(routers, parentPath = '') {
   const list = []
   for (const r of routers || []) {
+    if (r.path === '/' && r.children && r.children.length && !(r.meta && r.meta.title)) {
+      list.push(...flattenRouters(r.children, ''))
+      continue
+    }
     const path = r.path.startsWith('/')
       ? r.path
       : (parentPath ? parentPath + '/' + r.path : '/' + r.path)

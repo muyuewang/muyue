@@ -35,19 +35,24 @@ function menuIcon(name) {
 
 /** 后端路由树 → ProLayout 菜单数据（子路径拼父前缀，ProLayout 认 path 字段） */
 function toMenuData(routers, parentPath = '') {
-  return (routers || [])
-    .filter((r) => !r.hidden)
-    .map((r) => {
-      const path = r.path.startsWith('/')
-        ? r.path
-        : (parentPath ? parentPath + '/' + r.path : '/' + r.path)
-      return {
-        path,
-        name: (r.meta && r.meta.title) || r.name,
-        icon: r.meta && r.meta.icon ? menuIcon(r.meta.icon) : null,
-        routes: r.children && r.children.length ? toMenuData(r.children, path) : undefined
-      }
+  const result = []
+  for (const r of (routers || []).filter((x) => !x.hidden)) {
+    // 一级 C 菜单被包在无名 Layout 壳（path:'/' 且无标题）里：拆壳，子项直接提升为一级菜单
+    if (r.path === '/' && r.children && r.children.length && !(r.meta && r.meta.title)) {
+      result.push(...toMenuData(r.children, ''))
+      continue
+    }
+    const path = r.path.startsWith('/')
+      ? r.path
+      : (parentPath ? parentPath + '/' + r.path : '/' + r.path)
+    result.push({
+      path,
+      name: (r.meta && r.meta.title) || r.name,
+      icon: r.meta && r.meta.icon ? menuIcon(r.meta.icon) : null,
+      routes: r.children && r.children.length ? toMenuData(r.children, path) : undefined
     })
+  }
+  return result
 }
 
 function NoticeBell({ navigate }) {
@@ -140,7 +145,14 @@ export default function Layout({ menus }) {
       fixSiderbar
       fixedHeader
       location={{ pathname: location.pathname }}
-      menu={{ request: async () => toMenuData(menus), autoClose: false }}
+      menu={{
+        request: async () => [
+          // 首页是静态路由（与 Vue 版一致），固定在菜单首位
+          { path: '/index', name: '首页', icon: <Icons.HomeOutlined /> },
+          ...toMenuData(menus)
+        ],
+        autoClose: false
+      }}
       menuItemRender={(item, dom) => (
         <div onClick={() => item.path && navigate(item.path)}>{dom}</div>
       )}
