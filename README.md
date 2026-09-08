@@ -151,6 +151,7 @@ cd muyue-react-ui && npm install && npm run dev
 | 页签栏 TagsView | ✅ | ✅（点击/关闭/右键菜单） |
 | 暗色模式 | ✅ | ✅（顶栏切换，本地持久化） |
 | 按钮级权限 | `v-hasPermi` 指令 | `<Auth permi="...">` 组件 |
+| 页面缓存 | `<keep-alive>` + 菜单「是否缓存」 | 同机制：切换仅隐藏（由菜单 `is_cache` 驱动） |
 
 新增页面：后端菜单「组件路径」填 `xxx/yyy/index`，Vue 版放 `src/views` 对应文件；React 版在 `src/App.jsx` 的 `componentMap` 登记组件即可，未登记的菜单显示「建设中」兜底页。
 

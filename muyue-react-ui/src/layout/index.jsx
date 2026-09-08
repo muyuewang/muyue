@@ -36,6 +36,8 @@ import { listNotice, logout, unreadCount } from '../api/auth'
 import { subscribeUnread } from '../utils/noticeBus'
 import ErrorBoundary from '../components/ErrorBoundary'
 import TabsView from '../components/TabsView'
+import PageCache from '../components/PageCache'
+import { flattenRouters, staticRoutes } from '../routes/pages'
 import { authStore, loadAuth } from '../store/auth'
 import { tabsStore, openTab } from '../store/tabs'
 import { themeStore, toggleTheme } from '../store/theme'
@@ -163,6 +165,12 @@ export default function Layout({ menus }) {
   const { user } = authStore.use()
   const { dark } = themeStore.use()
 
+  // 静态路由 + 后端动态菜单（携带 noCache，决定是否参与页面缓存）
+  const pageRoutes = React.useMemo(
+    () => [...staticRoutes, ...flattenRouters(menus)],
+    [menus]
+  )
+
   useEffect(() => {
     if (!localStorage.getItem('muyue_react_token')) {
       navigate('/login', { replace: true })
@@ -175,9 +183,10 @@ export default function Layout({ menus }) {
   useEffect(() => {
     if (menus === null) return
     const titles = collectTitles(menus)
+    staticRoutes.forEach((r) => { titles[r.path] = r.title })
     const path = location.pathname
     if (path === '/login') return
-    openTab({ path, title: titles[path] || (path === '/index' ? '首页' : path) })
+    openTab({ path, title: titles[path] || path })
   }, [location.pathname, menus])
 
   const onLogout = () => {
@@ -254,7 +263,7 @@ export default function Layout({ menus }) {
       <TabsView />
       {/* 页面级错误边界：切路由自动重置，避免单页崩溃拖垮整个框架 */}
       <ErrorBoundary resetKey={location.pathname}>
-        <Outlet />
+        <PageCache routes={pageRoutes} />
       </ErrorBoundary>
     </ProLayout>
   )
