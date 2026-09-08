@@ -6,6 +6,7 @@ import {
 import { App, Popconfirm, Space, Tag } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { listPost, getPost, addPost, updatePost, delPost } from '../../api/post'
+import Auth from '../../components/Auth'
 
 export default function SystemPost() {
   const { message } = App.useApp()
@@ -27,12 +28,16 @@ export default function SystemPost() {
       title: '操作', width: 130,
       render: (_, row) => (
         <Space>
-          <a onClick={async () => { const res = await getPost(row.postId); setEditRow(res.data); setFormOpen(true) }}>修改</a>
-          <Popconfirm title="确认删除该岗位？" onConfirm={() =>
-            delPost(row.postId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
-          }>
-            <a style={{ color: 'red' }}>删除</a>
-          </Popconfirm>
+          <Auth permi="system:post:edit">
+            <a onClick={async () => { const res = await getPost(row.postId); setEditRow(res.data); setFormOpen(true) }}>修改</a>
+          </Auth>
+          <Auth permi="system:post:remove">
+            <Popconfirm title="确认删除该岗位？" onConfirm={() =>
+              delPost(row.postId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
+            }>
+              <a style={{ color: 'red' }}>删除</a>
+            </Popconfirm>
+          </Auth>
         </Space>
       )
     }
@@ -53,7 +58,9 @@ export default function SystemPost() {
           return { data: res.rows, total: res.total, success: true }
         }}
         toolBarRender={() => [
-          <a key="add" onClick={() => { setEditRow(null); setFormOpen(true) }}><PlusOutlined /> 新增岗位</a>
+          <Auth key="add" permi="system:post:add">
+            <a onClick={() => { setEditRow(null); setFormOpen(true) }}><PlusOutlined /> 新增岗位</a>
+          </Auth>
         ]}
       />
 

@@ -6,6 +6,7 @@ import {
 import { App, Popconfirm, Space, Table, Tag } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { listDept, getDept, addDept, updateDept, delDept, deptTreeSelect } from '../../api/dept'
+import Auth from '../../components/Auth'
 
 function toTreeData(nodes) {
   return (nodes || []).map((n) => ({
@@ -94,13 +95,19 @@ export default function SystemDept() {
       title: '操作', width: 180,
       render: (_, row) => (
         <Space>
-          <a onClick={() => openForm(null, row.deptId)}><PlusOutlined /> 新增</a>
-          <a onClick={() => openForm(row)}>修改</a>
-          <Popconfirm title="确认删除该部门？" onConfirm={() =>
-            delDept(row.deptId).then(() => { message.success('删除成功'); load() })
-          }>
-            <a style={{ color: 'red' }}>删除</a>
-          </Popconfirm>
+          <Auth permi="system:dept:add">
+            <a onClick={() => openForm(null, row.deptId)}><PlusOutlined /> 新增</a>
+          </Auth>
+          <Auth permi="system:dept:edit">
+            <a onClick={() => openForm(row)}>修改</a>
+          </Auth>
+          <Auth permi="system:dept:remove">
+            <Popconfirm title="确认删除该部门？" onConfirm={() =>
+              delDept(row.deptId).then(() => { message.success('删除成功'); load() })
+            }>
+              <a style={{ color: 'red' }}>删除</a>
+            </Popconfirm>
+          </Auth>
         </Space>
       )
     }
@@ -109,7 +116,9 @@ export default function SystemDept() {
   return (
     <PageContainer>
       <div style={{ marginBottom: 12 }}>
-        <a onClick={() => openForm(null, 0)}><PlusOutlined /> 新增顶级部门</a>
+        <Auth permi="system:dept:add">
+          <a onClick={() => openForm(null, 0)}><PlusOutlined /> 新增顶级部门</a>
+        </Auth>
       </div>
       <Table
         rowKey="deptId"

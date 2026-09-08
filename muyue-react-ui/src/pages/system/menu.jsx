@@ -6,6 +6,7 @@ import {
 import { App, Popconfirm, Space, Table, Tag } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { listMenu, getMenu, menuTreeSelect, addMenu, updateMenu, delMenu } from '../../api/menu'
+import Auth from '../../components/Auth'
 
 function toTreeData(nodes) {
   return (nodes || []).map((n) => ({
@@ -103,13 +104,21 @@ export default function SystemMenu() {
       title: '操作', width: 180,
       render: (_, row) => (
         <Space>
-          {row.menuType !== 'F' && <a onClick={() => openForm(null, row.menuId)}><PlusOutlined /> 新增</a>}
-          <a onClick={() => openForm(row)}>修改</a>
-          <Popconfirm title="确认删除该菜单？" onConfirm={() =>
-            delMenu(row.menuId).then(() => { message.success('删除成功'); load() })
-          }>
-            <a style={{ color: 'red' }}>删除</a>
-          </Popconfirm>
+          {row.menuType !== 'F' && (
+            <Auth permi="system:menu:add">
+              <a onClick={() => openForm(null, row.menuId)}><PlusOutlined /> 新增</a>
+            </Auth>
+          )}
+          <Auth permi="system:menu:edit">
+            <a onClick={() => openForm(row)}>修改</a>
+          </Auth>
+          <Auth permi="system:menu:remove">
+            <Popconfirm title="确认删除该菜单？" onConfirm={() =>
+              delMenu(row.menuId).then(() => { message.success('删除成功'); load() })
+            }>
+              <a style={{ color: 'red' }}>删除</a>
+            </Popconfirm>
+          </Auth>
         </Space>
       )
     }
@@ -118,7 +127,9 @@ export default function SystemMenu() {
   return (
     <PageContainer>
       <div style={{ marginBottom: 12 }}>
-        <a onClick={() => openForm(null, 0)}><PlusOutlined /> 新增顶级菜单</a>
+        <Auth permi="system:menu:add">
+          <a onClick={() => openForm(null, 0)}><PlusOutlined /> 新增顶级菜单</a>
+        </Auth>
       </div>
       <Table
         rowKey="menuId"

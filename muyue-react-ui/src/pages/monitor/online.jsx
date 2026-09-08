@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { PageContainer, ProTable } from '@ant-design/pro-components'
 import { App, Popconfirm, Tag } from 'antd'
 import { listOnline, forceLogout } from '../../api/tool'
+import Auth from '../../components/Auth'
 
 export default function MonitorOnline() {
   const { message } = App.useApp()
@@ -35,11 +36,13 @@ export default function MonitorOnline() {
           {
             title: '操作', width: 100,
             render: (_, row) => (
-              <Popconfirm title="确认强制该用户下线？" onConfirm={() =>
-                forceLogout(row.tokenId).then(() => { message.success('已强制下线'); actionRef.current?.reload() })
-              }>
-                <a style={{ color: 'red' }}>强退</a>
-              </Popconfirm>
+              <Auth permi="monitor:online:forceLogout">
+                <Popconfirm title="确认强制该用户下线？" onConfirm={() =>
+                  forceLogout(row.tokenId).then(() => { message.success('已强制下线'); actionRef.current?.reload() })
+                }>
+                  <a style={{ color: 'red' }}>强退</a>
+                </Popconfirm>
+              </Auth>
             )
           }
         ]}

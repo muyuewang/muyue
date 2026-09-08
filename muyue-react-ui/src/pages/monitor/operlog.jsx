@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { PageContainer, ProTable } from '@ant-design/pro-components'
 import { App, Descriptions, Modal, Popconfirm, Space, Tag } from 'antd'
 import { listOperlog, delOperlog, cleanOperlog } from '../../api/operlog'
+import Auth from '../../components/Auth'
 
 const bizMap = ['其它', '新增', '修改', '删除', '授权', '导出', '导入', '强退', '生成代码', '清空数据']
 
@@ -81,21 +82,25 @@ export default function MonitorOperlog() {
             render: (_, row) => (
               <Space>
                 <a onClick={() => showDetail(row)}>详细</a>
-                <Popconfirm title="确认删除？" onConfirm={() =>
-                  delOperlog(row.operId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
-                }>
-                  <a style={{ color: 'red' }}>删除</a>
-                </Popconfirm>
+                <Auth permi="monitor:operlog:remove">
+                  <Popconfirm title="确认删除？" onConfirm={() =>
+                    delOperlog(row.operId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
+                  }>
+                    <a style={{ color: 'red' }}>删除</a>
+                  </Popconfirm>
+                </Auth>
               </Space>
             )
           }
         ]}
         toolBarRender={() => [
-          <Popconfirm key="clean" title="确认清空所有操作日志？" onConfirm={() =>
-            cleanOperlog().then(() => { message.success('清空成功'); actionRef.current?.reload() })
-          }>
-            <a style={{ color: 'red' }}>清空</a>
-          </Popconfirm>
+          <Auth key="clean" permi="monitor:operlog:remove">
+            <Popconfirm title="确认清空所有操作日志？" onConfirm={() =>
+              cleanOperlog().then(() => { message.success('清空成功'); actionRef.current?.reload() })
+            }>
+              <a style={{ color: 'red' }}>清空</a>
+            </Popconfirm>
+          </Auth>
         ]}
       />
     </PageContainer>

@@ -9,6 +9,7 @@ import {
   listDictType, getDictType, addDictType, updateDictType, delDictType,
   listDictData, getDictData, addDictData, updateDictData, delDictData
 } from '../../api/dict'
+import Auth from '../../components/Auth'
 
 export default function SystemDict() {
   const { message } = App.useApp()
@@ -38,12 +39,16 @@ export default function SystemDict() {
       title: '操作', width: 130,
       render: (_, row) => (
         <Space>
-          <a onClick={async () => { const res = await getDictType(row.dictId); setEditType(res.data); setTypeOpen(true) }}>修改</a>
-          <Popconfirm title="确认删除该字典（含数据）？" onConfirm={() =>
-            delDictType(row.dictId).then(() => { message.success('删除成功'); typeActionRef.current?.reload() })
-          }>
-            <a style={{ color: 'red' }}>删除</a>
-          </Popconfirm>
+          <Auth permi="system:dict:edit">
+            <a onClick={async () => { const res = await getDictType(row.dictId); setEditType(res.data); setTypeOpen(true) }}>修改</a>
+          </Auth>
+          <Auth permi="system:dict:remove">
+            <Popconfirm title="确认删除该字典（含数据）？" onConfirm={() =>
+              delDictType(row.dictId).then(() => { message.success('删除成功'); typeActionRef.current?.reload() })
+            }>
+              <a style={{ color: 'red' }}>删除</a>
+            </Popconfirm>
+          </Auth>
         </Space>
       )
     }
@@ -63,12 +68,16 @@ export default function SystemDict() {
       title: '操作', width: 130,
       render: (_, row) => (
         <Space>
-          <a onClick={async () => { const res = await getDictData(row.dictCode); setEditData(res.data); setDataFormOpen(true) }}>修改</a>
-          <Popconfirm title="确认删除？" onConfirm={() =>
-            delDictData(row.dictCode).then(() => { message.success('删除成功'); dataActionRef.current?.reload() })
-          }>
-            <a style={{ color: 'red' }}>删除</a>
-          </Popconfirm>
+          <Auth permi="system:dict:edit">
+            <a onClick={async () => { const res = await getDictData(row.dictCode); setEditData(res.data); setDataFormOpen(true) }}>修改</a>
+          </Auth>
+          <Auth permi="system:dict:remove">
+            <Popconfirm title="确认删除？" onConfirm={() =>
+              delDictData(row.dictCode).then(() => { message.success('删除成功'); dataActionRef.current?.reload() })
+            }>
+              <a style={{ color: 'red' }}>删除</a>
+            </Popconfirm>
+          </Auth>
         </Space>
       )
     }
@@ -89,7 +98,9 @@ export default function SystemDict() {
           return { data: res.rows, total: res.total, success: true }
         }}
         toolBarRender={() => [
-          <a key="add" onClick={() => { setEditType(null); setTypeOpen(true) }}><PlusOutlined /> 新增字典类型</a>
+          <Auth key="add" permi="system:dict:add">
+            <a onClick={() => { setEditType(null); setTypeOpen(true) }}><PlusOutlined /> 新增字典类型</a>
+          </Auth>
         ]}
       />
 

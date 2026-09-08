@@ -4,6 +4,7 @@ import { App, Popconfirm, Space, Tag, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
 import { listFiles, filePreview, fileDownload } from '../../api/tool'
+import Auth from '../../components/Auth'
 
 const fmtSize = (v) => {
   const n = Number(v) || 0
@@ -60,20 +61,24 @@ export default function ToolFile() {
               <Space>
                 <a onClick={() => filePreview(row.fileId)}>预览</a>
                 <a onClick={() => fileDownload(row.fileId, row.fileName)}>下载</a>
-                <Popconfirm title="确认删除该附件？" onConfirm={() =>
-                  request({ url: '/tool/file/' + row.fileId, method: 'delete' })
-                    .then(() => { message.success('删除成功'); actionRef.current?.reload() })
-                }>
-                  <a style={{ color: 'red' }}>删除</a>
-                </Popconfirm>
+                <Auth permi="tool:file:remove">
+                  <Popconfirm title="确认删除该附件？" onConfirm={() =>
+                    request({ url: '/tool/file/' + row.fileId, method: 'delete' })
+                      .then(() => { message.success('删除成功'); actionRef.current?.reload() })
+                  }>
+                    <a style={{ color: 'red' }}>删除</a>
+                  </Popconfirm>
+                </Auth>
               </Space>
             )
           }
         ]}
         toolBarRender={() => [
-          <Upload key="upload" customRequest={doUpload} showUploadList={false}>
-            <a><UploadOutlined /> 上传附件</a>
-          </Upload>
+          <Auth key="upload" permi="tool:file:upload">
+            <Upload customRequest={doUpload} showUploadList={false}>
+              <a><UploadOutlined /> 上传附件</a>
+            </Upload>
+          </Auth>
         ]}
       />
     </PageContainer>

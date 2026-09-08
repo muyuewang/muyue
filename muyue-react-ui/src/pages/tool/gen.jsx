@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { PageContainer, ProTable } from '@ant-design/pro-components'
 import { App, Modal, Space, Tabs, Typography } from 'antd'
 import { listGenTables, previewGen, genDownload } from '../../api/tool'
+import Auth from '../../components/Auth'
 
 const { Text, Paragraph } = Typography
 
@@ -37,14 +38,18 @@ export default function ToolGen() {
             title: '操作', width: 140,
             render: (_, row) => (
               <Space>
-                <a onClick={() => showPreview(row.tableName)}>预览</a>
-                <a onClick={() =>
-                  genDownload(row.tableName, row.tableName + '-code.zip')
-                    .then(() => message.success('下载成功'))
-                    .catch((e) => message.error(e.message))
-                }>
-                  下载
-                </a>
+                <Auth permi="tool:gen:query">
+                  <a onClick={() => showPreview(row.tableName)}>预览</a>
+                </Auth>
+                <Auth permi="tool:gen:code">
+                  <a onClick={() =>
+                    genDownload(row.tableName, row.tableName + '-code.zip')
+                      .then(() => message.success('下载成功'))
+                      .catch((e) => message.error(e.message))
+                  }>
+                    下载
+                  </a>
+                </Auth>
               </Space>
             )
           }

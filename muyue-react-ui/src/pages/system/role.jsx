@@ -6,6 +6,9 @@ import {
 import { App, Popconfirm, Space, Switch, Tag, Tree } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { listRole, getRole, addRole, updateRole, changeRoleStatus, delRole, roleMenuTree } from '../../api/role'
+import Auth from '../../components/Auth'
+
+const statusTag = (v) => <Tag color={v === '0' ? 'success' : 'default'}>{v === '0' ? '正常' : '停用'}</Tag>
 
 function toTreeData(nodes) {
   return (nodes || []).map((n) => ({ title: n.label, value: n.id, key: n.id, children: toTreeData(n.children) }))
@@ -46,15 +49,17 @@ export default function SystemRole() {
     {
       title: '状态', dataIndex: 'status', width: 90, align: 'center',
       render: (_, row) => (
-        <Switch
-          checked={row.status === '0'}
-          onChange={(checked) =>
-            changeRoleStatus(row.roleId, checked ? '0' : '1').then(() => {
-              message.success('状态已更新')
-              actionRef.current?.reload()
-            })
-          }
-        />
+        <Auth permi="system:role:edit" fallback={statusTag(row.status)}>
+          <Switch
+            checked={row.status === '0'}
+            onChange={(checked) =>
+              changeRoleStatus(row.roleId, checked ? '0' : '1').then(() => {
+                message.success('状态已更新')
+                actionRef.current?.reload()
+              })
+            }
+          />
+        </Auth>
       )
     },
     { title: '创建时间', dataIndex: 'createTime', width: 170 },
@@ -62,13 +67,17 @@ export default function SystemRole() {
       title: '操作', width: 130,
       render: (_, row) => (
         <Space>
-          <a onClick={() => openForm(row)}>修改</a>
+          <Auth permi="system:role:edit">
+            <a onClick={() => openForm(row)}>修改</a>
+          </Auth>
           {row.roleId !== 1 && (
-            <Popconfirm title="确认删除该角色？" onConfirm={() =>
-              delRole(row.roleId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
-            }>
-              <a style={{ color: 'red' }}>删除</a>
-            </Popconfirm>
+            <Auth permi="system:role:remove">
+              <Popconfirm title="确认删除该角色？" onConfirm={() =>
+                delRole(row.roleId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
+              }>
+                <a style={{ color: 'red' }}>删除</a>
+              </Popconfirm>
+            </Auth>
           )}
         </Space>
       )
@@ -90,7 +99,9 @@ export default function SystemRole() {
           return { data: res.rows, total: res.total, success: true }
         }}
         toolBarRender={() => [
-          <a key="add" onClick={() => openForm(null)}><PlusOutlined /> 新增角色</a>
+          <Auth key="add" permi="system:role:add">
+            <a onClick={() => openForm(null)}><PlusOutlined /> 新增角色</a>
+          </Auth>
         ]}
       />
 
