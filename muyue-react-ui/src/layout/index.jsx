@@ -252,10 +252,10 @@ export default function Layout({ menus }) {
         ...routers
       ]}
       avatarProps={{
-        src: user.avatar || undefined,
+        src: user?.avatar || undefined,
         icon: <UserOutlined />,
         size: 'small',
-        title: user.nickName || '用户',
+        title: user?.nickName || '用户',
         render: (_props, dom) => (
           <Dropdown
             menu={{
