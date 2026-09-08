@@ -13,6 +13,7 @@ import {
 import { App, Button, Descriptions, Modal, Popconfirm, Space, Tag, Typography } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { listOrder, getOrder, addOrder, updateOrder, delOrder } from '../../api/order'
+import Auth from '../../components/Auth'
 
 const { Text } = Typography
 
@@ -60,13 +61,19 @@ export default function OrderOrder() {
       fixed: 'right',
       render: (_, row) => (
         <Space>
-          <a onClick={() => getOrder(row.orderId).then((res) => setDetail(res.data))}>明细</a>
-          <a onClick={() => { setEditRow(row); setFormOpen(true) }}>修改</a>
-          <Popconfirm title="确认删除该订单（含明细）？" onConfirm={() =>
-            delOrder(row.orderId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
-          }>
-            <a style={{ color: 'red' }}>删除</a>
-          </Popconfirm>
+          <Auth permi="order:order:query">
+            <a onClick={() => getOrder(row.orderId).then((res) => setDetail(res.data))}>明细</a>
+          </Auth>
+          <Auth permi="order:order:edit">
+            <a onClick={() => { setEditRow(row); setFormOpen(true) }}>修改</a>
+          </Auth>
+          <Auth permi="order:order:remove">
+            <Popconfirm title="确认删除该订单（含明细）？" onConfirm={() =>
+              delOrder(row.orderId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
+            }>
+              <a style={{ color: 'red' }}>删除</a>
+            </Popconfirm>
+          </Auth>
         </Space>
       )
     }
@@ -87,10 +94,12 @@ export default function OrderOrder() {
           return { data: res.rows, total: res.total, success: true }
         }}
         toolBarRender={() => [
-          <Button key="add" type="primary" icon={<PlusOutlined />}
-            onClick={() => { setEditRow(null); setFormOpen(true) }}>
-            新增订单
-          </Button>
+          <Auth key="add" permi="order:order:add">
+            <Button type="primary" icon={<PlusOutlined />}
+              onClick={() => { setEditRow(null); setFormOpen(true) }}>
+              新增订单
+            </Button>
+          </Auth>
         ]}
       />
 

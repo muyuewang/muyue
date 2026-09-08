@@ -18,6 +18,9 @@ export function delUser(ids) {
 export function deptTree() {
   return request({ url: '/system/dept/treeselect', method: 'get' })
 }
+export function resetUserPwd(userId, password) {
+  return request({ url: '/system/user/resetPwd', method: 'put', data: { userId, password } })
+}
 export function changeUserStatus(userId, status) {
   return request({ url: '/system/user/changeStatus', method: 'put', data: { userId, status } })
 }

@@ -148,9 +148,9 @@ cd muyue-react-ui && npm install && npm run dev
 | 通知公告 + 未读角标联动 | ✅（Pinia store） | ✅（noticeBus 总线） |
 | 代码生成（预览 / 下载） | ✅ | ✅ |
 | 数据大屏 | ✅ 独立路由 | ✅ 深色仪表盘 |
-| 页签栏 TagsView | ✅ | 待补 |
-| 暗色模式 | ✅ | 待补 |
-| 按钮权限 | `v-hasPermi` 指令 | `v-hasPermi` 式条件渲染 |
+| 页签栏 TagsView | ✅ | ✅（点击/关闭/右键菜单） |
+| 暗色模式 | ✅ | ✅（顶栏切换，本地持久化） |
+| 按钮级权限 | `v-hasPermi` 指令 | `<Auth permi="...">` 组件 |
 
 新增页面：后端菜单「组件路径」填 `xxx/yyy/index`，Vue 版放 `src/views` 对应文件；React 版在 `src/App.jsx` 的 `componentMap` 登记组件即可，未登记的菜单显示「建设中」兜底页。
 

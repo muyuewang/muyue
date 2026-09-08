@@ -18,6 +18,7 @@ import {
   updateNotice,
   delNotice
 } from '../../api/notice'
+import Auth from '../../components/Auth'
 import { notifyUnread } from '../../utils/noticeBus'
 
 const { Text } = Typography
@@ -113,18 +114,24 @@ export default function SystemNotice() {
       width: 150,
       render: (_, row) => (
         <Space>
-          <a onClick={() => openDetail(row)}>{row.is_read === 0 ? '阅读' : '详情'}</a>
-          <a
-            onClick={() => {
-              setEditRow(row)
-              setFormOpen(true)
-            }}
-          >
-            修改
-          </a>
-          <Popconfirm title="确认删除该公告？" onConfirm={() => handleDelete([row.noticeId])}>
-            <a style={{ color: 'red' }}>删除</a>
-          </Popconfirm>
+          <Auth permi="system:notice:query">
+            <a onClick={() => openDetail(row)}>{row.is_read === 0 ? '阅读' : '详情'}</a>
+          </Auth>
+          <Auth permi="system:notice:edit">
+            <a
+              onClick={() => {
+                setEditRow(row)
+                setFormOpen(true)
+              }}
+            >
+              修改
+            </a>
+          </Auth>
+          <Auth permi="system:notice:remove">
+            <Popconfirm title="确认删除该公告？" onConfirm={() => handleDelete([row.noticeId])}>
+              <a style={{ color: 'red' }}>删除</a>
+            </Popconfirm>
+          </Auth>
         </Space>
       )
     }
@@ -145,17 +152,18 @@ export default function SystemNotice() {
           return { data: res.rows, total: res.total, success: true }
         }}
         toolBarRender={() => [
-          <Button
-            key="add"
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              setEditRow(null)
-              setFormOpen(true)
-            }}
-          >
-            发布公告
-          </Button>
+          <Auth key="add" permi="system:notice:add">
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setEditRow(null)
+                setFormOpen(true)
+              }}
+            >
+              发布公告
+            </Button>
+          </Auth>
         ]}
       />
 

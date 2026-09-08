@@ -26,13 +26,19 @@ import {
   FundOutlined,
   FolderOutlined,
   HomeOutlined,
+  BulbOutlined,
+  MoonOutlined,
   IdcardOutlined,
   FolderOpenOutlined,
   TeamOutlined
 } from '@ant-design/icons'
-import { getInfo, listNotice, logout, unreadCount } from '../api/auth'
+import { listNotice, logout, unreadCount } from '../api/auth'
 import { subscribeUnread } from '../utils/noticeBus'
 import ErrorBoundary from '../components/ErrorBoundary'
+import TabsView from '../components/TabsView'
+import { authStore, loadAuth } from '../store/auth'
+import { tabsStore, openTab } from '../store/tabs'
+import { themeStore, toggleTheme } from '../store/theme'
 import { removeToken } from '../utils/request'
 
 const { Text } = Typography
@@ -133,20 +139,46 @@ function NoticeBell({ navigate }) {
   )
 }
 
+/** 菜单树 → { path: title }，用于页签标题 */
+function collectTitles(routers, parentPath = '') {
+  const map = {}
+  for (const r of routers || []) {
+    const isWrap = r.path === '/' && r.children && r.children.length && !(r.meta && r.meta.title)
+    const path = isWrap
+      ? ''
+      : (r.path.startsWith('/') ? r.path : (parentPath ? parentPath + '/' + r.path : '/' + r.path))
+    if (isWrap) {
+      Object.assign(map, collectTitles(r.children, ''))
+      continue
+    }
+    if (r.meta && r.meta.title) map[path] = r.meta.title
+    if (r.children && r.children.length) Object.assign(map, collectTitles(r.children, path))
+  }
+  return map
+}
+
 export default function Layout({ menus }) {
   const location = useLocation()
   const navigate = useNavigate()
-  const [user, setUser] = useState({ nickName: '', avatar: '' })
+  const { user } = authStore.use()
+  const { dark } = themeStore.use()
 
   useEffect(() => {
     if (!localStorage.getItem('muyue_react_token')) {
       navigate('/login', { replace: true })
       return
     }
-    getInfo()
-      .then((res) => setUser(res.user || {}))
-      .catch(() => {})
+    loadAuth().catch(() => {})
   }, [])
+
+  // 路由变化 → 登记页签（首页固定不可关闭）
+  useEffect(() => {
+    if (menus === null) return
+    const titles = collectTitles(menus)
+    const path = location.pathname
+    if (path === '/login') return
+    openTab({ path, title: titles[path] || (path === '/index' ? '首页' : path) })
+  }, [location.pathname, menus])
 
   const onLogout = () => {
     logout().catch(() => {})
@@ -169,7 +201,7 @@ export default function Layout({ menus }) {
       menu={{
         request: async () => [
           // 首页是静态路由（与 Vue 版一致），固定在菜单首位
-          { path: '/index', name: '首页', icon: <Icons.HomeOutlined /> },
+          { path: '/index', name: '首页', icon: <HomeOutlined /> },
           ...toMenuData(menus)
         ],
         autoClose: false
@@ -207,9 +239,19 @@ export default function Layout({ menus }) {
         )
       }}
       actionsRender={() => [
-        <NoticeBell key="bell" navigate={navigate} />
+        <NoticeBell key="bell" navigate={navigate} />,
+        <span
+          key="theme"
+          style={{ cursor: 'pointer', fontSize: 17 }}
+          title={dark ? '切换浅色' : '切换深色'}
+          onClick={() => toggleTheme()}
+        >
+          {dark ? <BulbOutlined /> : <MoonOutlined />}
+        </span>
       ]}
     >
+      {/* 已打开页面页签栏（对标 Vue 版 TagsView） */}
+      <TabsView />
       {/* 页面级错误边界：切路由自动重置，避免单页崩溃拖垮整个框架 */}
       <ErrorBoundary resetKey={location.pathname}>
         <Outlet />

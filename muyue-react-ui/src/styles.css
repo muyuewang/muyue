@@ -1,0 +1,86 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #f5f7fa;
+  transition: background-color 0.2s;
+}
+
+html.dark body {
+  background: #141414;
+}
+
+/* 页签栏（对标 Vue 版 TagsView） */
+.tabs-view {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 6px 16px;
+  background: #fff;
+  border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+}
+
+html.dark .tabs-view {
+  background: #1f1f1f;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.tabs-view .tab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+  cursor: pointer;
+  background: #fff;
+  user-select: none;
+}
+
+html.dark .tabs-view .tab-item {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #c9d1d9;
+}
+
+.tabs-view .tab-item:hover {
+  border-color: #1677ff;
+  color: #1677ff;
+}
+
+.tabs-view .tab-item.active {
+  background: #1677ff;
+  border-color: #1677ff;
+  color: #fff;
+}
+
+.tabs-view .tab-item .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.tabs-view .tab-item .close {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.tabs-view .tab-item .close:hover {
+  opacity: 1;
+  color: #ff7875;
+}
+
+.tabs-view .tabs-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+}

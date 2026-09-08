@@ -10,9 +10,10 @@ import {
   ProFormTreeSelect,
   ProFormTextArea
 } from '@ant-design/pro-components'
-import { App, Card, Col, Popconfirm, Row, Space, Tag, Tree } from 'antd'
+import { App, Card, Col, Input, Popconfirm, Row, Space, Tag, Tree } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { listUser, getUser, addUser, updateUser, delUser, deptTree } from '../../api/user'
+import { listUser, getUser, addUser, updateUser, delUser, deptTree, resetUserPwd } from '../../api/user'
+import Auth from '../../components/Auth'
 
 /** 后端 deptTree（{code,data:[{id,label,children}]}）→ antd TreeData */
 function toTreeData(nodes) {
@@ -22,7 +23,7 @@ function toTreeData(nodes) {
 const statusTag = (v) => <Tag color={v === '0' ? 'success' : 'default'}>{v === '0' ? '正常' : '停用'}</Tag>
 
 export default function SystemUser() {
-  const { message } = App.useApp()
+  const { message, modal } = App.useApp()
   const actionRef = useRef()
   const [deptId, setDeptId] = useState(undefined)
   const [treeData, setTreeData] = React.useState([])
@@ -47,20 +48,43 @@ export default function SystemUser() {
       fixed: 'right',
       render: (_, row) => (
         <Space>
-          <a onClick={async () => {
-            const res = await getUser(row.userId)
-            setEditRow(res.data)
-            setFormOpen(true)
-          }}>修改</a>
-          <Popconfirm title="确认删除该用户？" onConfirm={() =>
-            delUser(row.userId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
-          }>
-            <a style={{ color: 'red' }}>删除</a>
-          </Popconfirm>
+          <Auth permi="system:user:edit">
+            <a onClick={async () => {
+              const res = await getUser(row.userId)
+              setEditRow(res.data)
+              setFormOpen(true)
+            }}>修改</a>
+          </Auth>
+          <Auth permi="system:user:resetPwd">
+            <a onClick={() => resetPwd(row)}>重置密码</a>
+          </Auth>
+          <Auth permi="system:user:remove">
+            <Popconfirm title="确认删除该用户？" onConfirm={() =>
+              delUser(row.userId).then(() => { message.success('删除成功'); actionRef.current?.reload() })
+            }>
+              <a style={{ color: 'red' }}>删除</a>
+            </Popconfirm>
+          </Auth>
         </Space>
       )
     }
   ]
+
+  /** 重置密码：管理员手动设置新密码 */
+  const resetPwd = (row) => {
+    let pwd = 'admin123'
+    modal.confirm({
+      title: `重置 ${row.userName} 的密码`,
+      content: (
+        <Input
+          defaultValue="admin123"
+          placeholder="请输入新密码"
+          onChange={(e) => { pwd = e.target.value }}
+        />
+      ),
+      onOk: () => resetUserPwd(row.userId, pwd).then(() => message.success('密码已重置'))
+    })
+  }
 
   return (
     <PageContainer>
@@ -94,9 +118,11 @@ export default function SystemUser() {
               return { data: res.rows, total: res.total, success: true }
             }}
             toolBarRender={() => [
-              <a key="add" onClick={() => { setEditRow(null); setFormOpen(true) }}>
-                <PlusOutlined /> 新增用户
-              </a>
+              <Auth key="add" permi="system:user:add">
+                <a onClick={() => { setEditRow(null); setFormOpen(true) }}>
+                  <PlusOutlined /> 新增用户
+                </a>
+              </Auth>
             ]}
           />
         </Col>
