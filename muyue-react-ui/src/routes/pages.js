@@ -20,6 +20,8 @@ const ToolMail = lazy(() => import('../pages/tool/mail'))
 const ToolFile = lazy(() => import('../pages/tool/file'))
 export const Profile = lazy(() => import('../pages/profile'))
 const Screen = lazy(() => import('../pages/screen'))
+/** 独立全屏数据大屏（Layout 外，对标 Vue 版 /bigscreen） */
+export const BigScreen = Screen
 export const Placeholder = lazy(() => import('../pages/placeholder'))
 
 /**

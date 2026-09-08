@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { ProLayout } from '@ant-design/pro-components'
-import { Badge, Dropdown, List, Popover, Tag, Typography, Avatar, message } from 'antd'
+import { App as AntdApp, Badge, Dropdown, List, Popover, Tag, Typography, Avatar } from 'antd'
 import {
   BellOutlined,
   UserOutlined,
@@ -28,6 +28,8 @@ import {
   HomeOutlined,
   BulbOutlined,
   MoonOutlined,
+  FullscreenOutlined,
+  FullscreenExitOutlined,
   IdcardOutlined,
   FolderOpenOutlined,
   TeamOutlined
@@ -41,6 +43,7 @@ import { flattenRouters, staticRoutes } from '../routes/pages'
 import { authStore, loadAuth } from '../store/auth'
 import { tabsStore, openTab } from '../store/tabs'
 import { themeStore, toggleTheme } from '../store/theme'
+import { emitPageRefresh } from '../utils/cacheBus'
 import { removeToken } from '../utils/request'
 
 const { Text } = Typography
@@ -162,8 +165,10 @@ function collectTitles(routers, parentPath = '') {
 export default function Layout({ menus }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const { modal } = AntdApp.useApp()
   const { user } = authStore.use()
   const { dark } = themeStore.use()
+  const [fullscreen, setFullscreen] = useState(false)
 
   // 静态路由 + 后端动态菜单（携带 noCache，决定是否参与页面缓存）
   const pageRoutes = React.useMemo(
@@ -189,11 +194,35 @@ export default function Layout({ menus }) {
     openTab({ path, title: titles[path] || path })
   }, [location.pathname, menus])
 
+  // 全屏状态同步（对齐 Vue Navbar 的全屏按钮）
+  useEffect(() => {
+    const onFsChange = () => setFullscreen(Boolean(document.fullscreenElement))
+    document.addEventListener('fullscreenchange', onFsChange)
+    return () => document.removeEventListener('fullscreenchange', onFsChange)
+  }, [])
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.()
+    } else {
+      document.documentElement.requestFullscreen?.()
+    }
+  }
+
+  // 退出登录二次确认（对齐 Vue 版 ElMessageBox）
   const onLogout = () => {
-    logout().catch(() => {})
-    removeToken()
-    message.success('已退出登录')
-    window.location.href = '/login'
+    modal.confirm({
+      title: '提示',
+      content: '确定注销并退出系统吗？',
+      okText: '确定',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: () => {
+        logout().catch(() => {})
+        removeToken()
+        window.location.href = '/login'
+      }
+    })
   }
 
   if (menus === null) {
@@ -232,14 +261,15 @@ export default function Layout({ menus }) {
             menu={{
               items: [
                 { key: 'profile', icon: <SettingOutlined />, label: '个人中心' },
-                { key: 'reload', icon: <ReloadOutlined />, label: '刷新页面' },
+                { key: 'reload', icon: <ReloadOutlined />, label: '刷新当前页' },
                 { type: 'divider' },
                 { key: 'logout', icon: <LogoutOutlined />, danger: true, label: '退出登录' }
               ],
               onClick: ({ key }) => {
                 if (key === 'profile') navigate('/user/profile')
                 if (key === 'logout') onLogout()
-                if (key === 'reload') window.location.reload()
+                // 仅重载当前页签组件，不整页刷新（见 PageCache）
+                if (key === 'reload') emitPageRefresh(location.pathname)
               }
             }}
           >
@@ -249,13 +279,40 @@ export default function Layout({ menus }) {
       }}
       actionsRender={() => [
         <NoticeBell key="bell" navigate={navigate} />,
+        // 数据大屏：独立全屏页新标签打开（对齐 Vue 版 /bigscreen）
+        <span
+          key="screen"
+          title="数据大屏"
+          onClick={() => window.open('/screen', '_blank')}
+          style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', fontSize: 16 }}
+        >
+          <FundOutlined />
+        </span>,
+        // 整页刷新（对齐 Vue Navbar 刷新）
+        <span
+          key="refresh"
+          title="刷新"
+          onClick={() => window.location.reload()}
+          style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', fontSize: 16 }}
+        >
+          <ReloadOutlined />
+        </span>,
         <span
           key="theme"
-          style={{ cursor: 'pointer', fontSize: 17 }}
+          style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', fontSize: 16 }}
           title={dark ? '切换浅色' : '切换深色'}
           onClick={() => toggleTheme()}
         >
           {dark ? <BulbOutlined /> : <MoonOutlined />}
+        </span>,
+        // 全屏切换（对齐 Vue Navbar 全屏按钮）
+        <span
+          key="fullscreen"
+          style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', fontSize: 16 }}
+          title={fullscreen ? '退出全屏' : '全屏'}
+          onClick={toggleFullscreen}
+        >
+          {fullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
         </span>
       ]}
     >

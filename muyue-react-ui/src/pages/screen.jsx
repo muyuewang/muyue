@@ -42,9 +42,24 @@ function BarRow({ label, value, max, color, suffix }) {
   )
 }
 
-export default function Screen() {
+/**
+ * 数据大屏（对齐 Vue 版 /bigscreen 独立全屏页）：
+ * - standalone：独立路由 /screen（Layout 外新标签全屏打开）
+ * - 默认：嵌入 Layout 内容区（后端菜单 component 为 screen/jump 时）
+ */
+export default function Screen({ standalone = false }) {
   const [stats, setStats] = useState(null)
   const [clock, setClock] = useState('')
+
+  useEffect(() => {
+    if (!standalone) return
+    // 独立全屏时铺满深色背景，避免露出浅色 body
+    const prev = document.body.style.background
+    document.body.style.background = '#0b1c33'
+    return () => {
+      document.body.style.background = prev
+    }
+  }, [standalone])
 
   useEffect(() => {
     const load = () => getScreenStats().then((res) => setStats(res.data || {})).catch(() => setStats({}))
@@ -72,8 +87,9 @@ export default function Screen() {
   return (
     <div
       style={{
-        margin: -24,
-        minHeight: 'calc(100vh - 56px)',
+        // 独立全屏时不再需要抵消 Layout 内容区的负边距
+        margin: standalone ? 0 : -24,
+        minHeight: standalone ? '100vh' : 'calc(100vh - 56px)',
         background: 'linear-gradient(160deg, #0b1c33 0%, #0d2440 55%, #0a2f4a 100%)',
         padding: 24,
         color: '#e6f0ff'

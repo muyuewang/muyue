@@ -3,10 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Button, Dropdown, Tooltip } from 'antd'
 import { CloseOutlined, ReloadOutlined, CloseCircleOutlined, MinusOutlined } from '@ant-design/icons'
 import { tabsStore, closeTab, closeOthers, closeAll } from '../store/tabs'
+import { emitPageRefresh } from '../utils/cacheBus'
 
 /**
  * 已打开页面页签栏（对标 Vue 版 TagsView）：
- * 点击切换、× 关闭当前、右键菜单（刷新 / 关闭 / 关闭其他 / 关闭所有）
+ * 点击切换、× / 中键关闭当前、右键菜单（刷新 / 关闭 / 关闭其他 / 关闭所有）
+ * 「刷新当前」仅重载该页面组件，不整页刷新（见 PageCache）
  */
 export default function TabsView() {
   const { tabs } = tabsStore.use()
@@ -17,6 +19,11 @@ export default function TabsView() {
     const next = closeTab(path)
     if (next && next !== location.pathname) navigate(next)
     else if (!next) navigate('/index')
+  }
+
+  const refreshTab = (path) => {
+    emitPageRefresh(path)
+    if (path !== location.pathname) navigate(path)
   }
 
   const menuItems = (path) => {
@@ -35,7 +42,7 @@ export default function TabsView() {
 
   const onMenuClick = (path, key) => {
     if (key === 'refresh') {
-      window.location.reload()
+      refreshTab(path)
     } else if (key === 'close') {
       onClose(path)
     } else if (key === 'others') {
@@ -60,6 +67,13 @@ export default function TabsView() {
             <div
               className={'tab-item' + (active ? ' active' : '')}
               onClick={() => navigate(tab.path)}
+              onAuxClick={(e) => {
+                // 中键关闭（对齐 Vue TagsView @click.middle）
+                if (e.button === 1) {
+                  e.preventDefault()
+                  if (tab.closable) onClose(tab.path)
+                }
+              }}
             >
               {active && <span className="dot" />}
               <span className="title">{tab.title}</span>
@@ -78,7 +92,7 @@ export default function TabsView() {
       })}
       <div className="tabs-actions">
         <Tooltip title="刷新当前">
-          <Button size="small" type="text" icon={<ReloadOutlined />} onClick={() => window.location.reload()} />
+          <Button size="small" type="text" icon={<ReloadOutlined />} onClick={() => refreshTab(location.pathname)} />
         </Tooltip>
         <Tooltip title="关闭所有">
           <Button size="small" type="text" icon={<CloseCircleOutlined />} onClick={() => navigate(closeAll())} />
